@@ -1,0 +1,120 @@
+(defun shen.<datatype> (V3127) (let Result (if (shen.non-empty-stream? V3127) (let D (shen.hds V3127) (let News2988 (shen.tls V3127) (let Parseshen.<datatype-rules> (shen.<datatype-rules> News2988) (if (shen.parse-failure? Parseshen.<datatype-rules>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<datatype-rules>) (let Prolog (shen.rules->prolog D (shen.<-out Parseshen.<datatype-rules>)) (shen.remember-datatype D (fn D)))))))) (shen.parse-failure)) (if (shen.parse-failure? Result) (shen.parse-failure) Result)))
+
+(defun shen.<datatype-rules> (V3128) (let Result (let Parseshen.<datatype-rule> (shen.<datatype-rule> V3128) (if (shen.parse-failure? Parseshen.<datatype-rule>) (shen.parse-failure) (let Parseshen.<datatype-rules> (shen.<datatype-rules> Parseshen.<datatype-rule>) (if (shen.parse-failure? Parseshen.<datatype-rules>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<datatype-rules>) (append (shen.<-out Parseshen.<datatype-rule>) (shen.<-out Parseshen.<datatype-rules>))))))) (if (shen.parse-failure? Result) (let Result (let Parse<!> (<!> V3128) (if (shen.parse-failure? Parse<!>) (shen.parse-failure) (shen.comb (shen.in-> Parse<!>) (if (empty? (shen.<-out Parse<!>)) () (simple-error (cn "datatype syntax error here:
+ " (shen.app (shen.<-out Parse<!>) "
+ ..." shen.r))))))) (if (shen.parse-failure? Result) (shen.parse-failure) Result)) Result)))
+
+(defun shen.<datatype-rule> (V3129) (let Result (let Parseshen.<single> (shen.<single> V3129) (if (shen.parse-failure? Parseshen.<single>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<single>) (shen.<-out Parseshen.<single>)))) (if (shen.parse-failure? Result) (let Result (let Parseshen.<double> (shen.<double> V3129) (if (shen.parse-failure? Parseshen.<double>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<double>) (shen.<-out Parseshen.<double>)))) (if (shen.parse-failure? Result) (shen.parse-failure) Result)) Result)))
+
+(defun shen.<single> (V3130) (let Result (let Parseshen.<sides> (shen.<sides> V3130) (if (shen.parse-failure? Parseshen.<sides>) (shen.parse-failure) (let Parseshen.<prems> (shen.<prems> Parseshen.<sides>) (if (shen.parse-failure? Parseshen.<prems>) (shen.parse-failure) (let Parseshen.<sng> (shen.<sng> Parseshen.<prems>) (if (shen.parse-failure? Parseshen.<sng>) (shen.parse-failure) (let Parseshen.<conc> (shen.<conc> Parseshen.<sng>) (if (shen.parse-failure? Parseshen.<conc>) (shen.parse-failure) (let Parseshen.<sc> (shen.<sc> Parseshen.<conc>) (if (shen.parse-failure? Parseshen.<sc>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<sc>) (cons (cons (shen.<-out Parseshen.<sides>) (cons (shen.<-out Parseshen.<prems>) (cons (shen.<-out Parseshen.<conc>) ()))) ())))))))))))) (if (shen.parse-failure? Result) (shen.parse-failure) Result)))
+
+(defun shen.<double> (V3131) (let Result (let Parseshen.<sides> (shen.<sides> V3131) (if (shen.parse-failure? Parseshen.<sides>) (shen.parse-failure) (let Parseshen.<formulae> (shen.<formulae> Parseshen.<sides>) (if (shen.parse-failure? Parseshen.<formulae>) (shen.parse-failure) (let Parseshen.<dbl> (shen.<dbl> Parseshen.<formulae>) (if (shen.parse-failure? Parseshen.<dbl>) (shen.parse-failure) (let Parseshen.<formula> (shen.<formula> Parseshen.<dbl>) (if (shen.parse-failure? Parseshen.<formula>) (shen.parse-failure) (let Parseshen.<sc> (shen.<sc> Parseshen.<formula>) (if (shen.parse-failure? Parseshen.<sc>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<sc>) (shen.lr-rule (shen.<-out Parseshen.<sides>) (shen.<-out Parseshen.<formulae>) (cons () (cons (shen.<-out Parseshen.<formula>) ())))))))))))))) (if (shen.parse-failure? Result) (shen.parse-failure) Result)))
+
+(defun shen.<formulae> (V3132) (let Result (let Parseshen.<formula> (shen.<formula> V3132) (if (shen.parse-failure? Parseshen.<formula>) (shen.parse-failure) (let Parseshen.<sc> (shen.<sc> Parseshen.<formula>) (if (shen.parse-failure? Parseshen.<sc>) (shen.parse-failure) (let Parseshen.<formulae> (shen.<formulae> Parseshen.<sc>) (if (shen.parse-failure? Parseshen.<formulae>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<formulae>) (cons (cons () (cons (shen.<-out Parseshen.<formula>) ())) (shen.<-out Parseshen.<formulae>))))))))) (if (shen.parse-failure? Result) (let Result (let Parseshen.<formula> (shen.<formula> V3132) (if (shen.parse-failure? Parseshen.<formula>) (shen.parse-failure) (let Parseshen.<sc> (shen.<sc> Parseshen.<formula>) (if (shen.parse-failure? Parseshen.<sc>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<sc>) (cons (cons () (cons (shen.<-out Parseshen.<formula>) ())) ())))))) (if (shen.parse-failure? Result) (shen.parse-failure) Result)) Result)))
+
+(defun shen.<conc> (V3133) (let Result (let Parseshen.<ass> (shen.<ass> V3133) (if (shen.parse-failure? Parseshen.<ass>) (shen.parse-failure) (if (shen.=hd? Parseshen.<ass> >>) (let News2995 (shen.tls Parseshen.<ass>) (let Parseshen.<formula> (shen.<formula> News2995) (if (shen.parse-failure? Parseshen.<formula>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<formula>) (cons (shen.<-out Parseshen.<ass>) (cons (shen.<-out Parseshen.<formula>) ())))))) (shen.parse-failure)))) (if (shen.parse-failure? Result) (let Result (let Parseshen.<formula> (shen.<formula> V3133) (if (shen.parse-failure? Parseshen.<formula>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<formula>) (cons () (cons (shen.<-out Parseshen.<formula>) ()))))) (if (shen.parse-failure? Result) (shen.parse-failure) Result)) Result)))
+
+(defun shen.<prems> (V3134) (let Result (let Parseshen.<prem> (shen.<prem> V3134) (if (shen.parse-failure? Parseshen.<prem>) (shen.parse-failure) (let Parseshen.<sc> (shen.<sc> Parseshen.<prem>) (if (shen.parse-failure? Parseshen.<sc>) (shen.parse-failure) (let Parseshen.<prems> (shen.<prems> Parseshen.<sc>) (if (shen.parse-failure? Parseshen.<prems>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<prems>) (cons (shen.<-out Parseshen.<prem>) (shen.<-out Parseshen.<prems>))))))))) (if (shen.parse-failure? Result) (let Result (let Parse<e> (<e> V3134) (if (shen.parse-failure? Parse<e>) (shen.parse-failure) (shen.comb (shen.in-> Parse<e>) ()))) (if (shen.parse-failure? Result) (shen.parse-failure) Result)) Result)))
+
+(defun shen.<prem> (V3135) (let Result (if (shen.=hd? V3135 !) (let News2998 (shen.tls V3135) (shen.comb (shen.in-> News2998) !)) (shen.parse-failure)) (if (shen.parse-failure? Result) (let Result (let Parseshen.<ass> (shen.<ass> V3135) (if (shen.parse-failure? Parseshen.<ass>) (shen.parse-failure) (if (shen.=hd? Parseshen.<ass> >>) (let News2999 (shen.tls Parseshen.<ass>) (let Parseshen.<formula> (shen.<formula> News2999) (if (shen.parse-failure? Parseshen.<formula>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<formula>) (cons (shen.<-out Parseshen.<ass>) (cons (shen.<-out Parseshen.<formula>) ())))))) (shen.parse-failure)))) (if (shen.parse-failure? Result) (let Result (let Parseshen.<formula> (shen.<formula> V3135) (if (shen.parse-failure? Parseshen.<formula>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<formula>) (cons () (cons (shen.<-out Parseshen.<formula>) ()))))) (if (shen.parse-failure? Result) (shen.parse-failure) Result)) Result)) Result)))
+
+(defun shen.<ass> (V3136) (let Result (let Parseshen.<formula> (shen.<formula> V3136) (if (shen.parse-failure? Parseshen.<formula>) (shen.parse-failure) (let Parseshen.<iscomma> (shen.<iscomma> Parseshen.<formula>) (if (shen.parse-failure? Parseshen.<iscomma>) (shen.parse-failure) (let Parseshen.<ass> (shen.<ass> Parseshen.<iscomma>) (if (shen.parse-failure? Parseshen.<ass>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<ass>) (cons (shen.<-out Parseshen.<formula>) (shen.<-out Parseshen.<ass>))))))))) (if (shen.parse-failure? Result) (let Result (let Parseshen.<formula> (shen.<formula> V3136) (if (shen.parse-failure? Parseshen.<formula>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<formula>) (cons (shen.<-out Parseshen.<formula>) ())))) (if (shen.parse-failure? Result) (let Result (let Parse<e> (<e> V3136) (if (shen.parse-failure? Parse<e>) (shen.parse-failure) (shen.comb (shen.in-> Parse<e>) ()))) (if (shen.parse-failure? Result) (shen.parse-failure) Result)) Result)) Result)))
+
+(defun shen.<iscomma> (V3137) (let Result (if (shen.non-empty-stream? V3137) (let X (shen.hds V3137) (let News3002 (shen.tls V3137) (if (= X (intern ",")) (shen.comb (shen.in-> News3002) shen.skip) (shen.parse-failure)))) (shen.parse-failure)) (if (shen.parse-failure? Result) (shen.parse-failure) Result)))
+
+(defun shen.<formula> (V3138) (let Result (let Parseshen.<expr> (shen.<expr> V3138) (if (shen.parse-failure? Parseshen.<expr>) (shen.parse-failure) (let Parseshen.<iscolon> (shen.<iscolon> Parseshen.<expr>) (if (shen.parse-failure? Parseshen.<iscolon>) (shen.parse-failure) (let Parseshen.<type> (shen.<type> Parseshen.<iscolon>) (if (shen.parse-failure? Parseshen.<type>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<type>) (cons (shen.curry (shen.<-out Parseshen.<expr>)) (cons (intern ":") (cons (shen.rectify-type (shen.<-out Parseshen.<type>)) ())))))))))) (if (shen.parse-failure? Result) (let Result (let Parseshen.<expr> (shen.<expr> V3138) (if (shen.parse-failure? Parseshen.<expr>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<expr>) (shen.<-out Parseshen.<expr>)))) (if (shen.parse-failure? Result) (shen.parse-failure) Result)) Result)))
+
+(defun shen.<iscolon> (V3139) (let Result (if (shen.non-empty-stream? V3139) (let X (shen.hds V3139) (let News3005 (shen.tls V3139) (if (= X (intern ":")) (shen.comb (shen.in-> News3005) shen.skip) (shen.parse-failure)))) (shen.parse-failure)) (if (shen.parse-failure? Result) (shen.parse-failure) Result)))
+
+(defun shen.<sides> (V3140) (let Result (let Parseshen.<side> (shen.<side> V3140) (if (shen.parse-failure? Parseshen.<side>) (shen.parse-failure) (let Parseshen.<sides> (shen.<sides> Parseshen.<side>) (if (shen.parse-failure? Parseshen.<sides>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<sides>) (cons (shen.<-out Parseshen.<side>) (shen.<-out Parseshen.<sides>))))))) (if (shen.parse-failure? Result) (let Result (let Parse<e> (<e> V3140) (if (shen.parse-failure? Parse<e>) (shen.parse-failure) (shen.comb (shen.in-> Parse<e>) ()))) (if (shen.parse-failure? Result) (shen.parse-failure) Result)) Result)))
+
+(defun shen.<side> (V3141) (let Result (if (shen.=hd? V3141 if) (let News3008 (shen.tls V3141) (if (shen.non-empty-stream? News3008) (let P (shen.hds News3008) (let News3009 (shen.tls News3008) (shen.comb (shen.in-> News3009) (cons if (cons P ()))))) (shen.parse-failure))) (shen.parse-failure)) (if (shen.parse-failure? Result) (let Result (if (shen.=hd? V3141 let) (let News3010 (shen.tls V3141) (if (shen.non-empty-stream? News3010) (let X (shen.hds News3010) (let News3011 (shen.tls News3010) (if (shen.non-empty-stream? News3011) (let Y (shen.hds News3011) (let News3012 (shen.tls News3011) (shen.comb (shen.in-> News3012) (cons let (cons X (cons Y ())))))) (shen.parse-failure)))) (shen.parse-failure))) (shen.parse-failure)) (if (shen.parse-failure? Result) (let Result (if (shen.=hd? V3141 shen.let!) (let News3013 (shen.tls V3141) (if (shen.non-empty-stream? News3013) (let X (shen.hds News3013) (let News3014 (shen.tls News3013) (if (shen.non-empty-stream? News3014) (let Y (shen.hds News3014) (let News3015 (shen.tls News3014) (shen.comb (shen.in-> News3015) (cons shen.let! (cons X (cons Y ())))))) (shen.parse-failure)))) (shen.parse-failure))) (shen.parse-failure)) (if (shen.parse-failure? Result) (shen.parse-failure) Result)) Result)) Result)))
+
+(defun shen.lr-rule (V3148 V3149 V3150) (cond ((and (cons? V3150) (and (= () (hd V3150)) (and (cons? (tl V3150)) (= () (tl (tl V3150)))))) (let P (gensym (protect P)) (let LConc (cons (tl V3150) (cons P ())) (let LPrem (cons (shen.coll-formulae V3149) (cons P ())) (let Left (cons V3148 (cons (cons LPrem ()) (cons LConc ()))) (let Right (cons V3148 (cons V3149 (cons V3150 ()))) (cons Right (cons Left ())))))))) (true (simple-error "implementation error in shen.lr-rule"))))
+
+(defun shen.coll-formulae (V3153) (cond ((= () V3153) ()) ((and (cons? V3153) (and (cons? (hd V3153)) (and (= () (hd (hd V3153))) (and (cons? (tl (hd V3153))) (= () (tl (tl (hd V3153)))))))) (cons (hd (tl (hd V3153))) (shen.coll-formulae (tl V3153)))) (true (simple-error "implementation error in shen.coll-formulae"))))
+
+(defun shen.<expr> (V3154) (let Result (if (shen.non-empty-stream? V3154) (let X (shen.hds V3154) (let News3017 (shen.tls V3154) (if (not (shen.key-in-sequent-calculus? X)) (shen.comb (shen.in-> News3017) (macroexpand X)) (shen.parse-failure)))) (shen.parse-failure)) (if (shen.parse-failure? Result) (shen.parse-failure) Result)))
+
+(defun shen.key-in-sequent-calculus? (V3155) (or (element? V3155 (cons >> (cons (intern ";") (cons (intern ",") (cons (intern ":") (cons <-- ())))))) (or (shen.sng? V3155) (shen.dbl? V3155))))
+
+(defun shen.<type> (V3156) (let Result (let Parseshen.<expr> (shen.<expr> V3156) (if (shen.parse-failure? Parseshen.<expr>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<expr>) (shen.<-out Parseshen.<expr>)))) (if (shen.parse-failure? Result) (shen.parse-failure) Result)))
+
+(defun shen.<dbl> (V3157) (let Result (if (shen.non-empty-stream? V3157) (let X (shen.hds V3157) (let News3020 (shen.tls V3157) (if (shen.dbl? X) (shen.comb (shen.in-> News3020) X) (shen.parse-failure)))) (shen.parse-failure)) (if (shen.parse-failure? Result) (shen.parse-failure) Result)))
+
+(defun shen.<sng> (V3158) (let Result (if (shen.non-empty-stream? V3158) (let X (shen.hds V3158) (let News3022 (shen.tls V3158) (if (shen.sng? X) (shen.comb (shen.in-> News3022) X) (shen.parse-failure)))) (shen.parse-failure)) (if (shen.parse-failure? Result) (shen.parse-failure) Result)))
+
+(defun shen.sng? (V3159) (and (symbol? V3159) (shen.sng-h? (str V3159))))
+
+(defun shen.sng-h? (V3162) (cond ((= "___" V3162) true) ((and (shen.+string? V3162) (= "_" (hdstr V3162))) (shen.sng-h? (tlstr V3162))) (true false)))
+
+(defun shen.dbl? (V3163) (and (symbol? V3163) (shen.dbl-h? (str V3163))))
+
+(defun shen.dbl-h? (V3166) (cond ((= "===" V3166) true) ((and (shen.+string? V3166) (= "=" (hdstr V3166))) (shen.dbl-h? (tlstr V3166))) (true false)))
+
+(defun shen.remember-datatype (V3167 V3168) (do (set shen.*datatypes* (shen.assoc-> V3167 V3168 (value shen.*datatypes*))) (do (set shen.*alldatatypes* (shen.assoc-> V3167 V3168 (value shen.*alldatatypes*))) V3167)))
+
+(defun shen.rules->prolog (V3169 V3170) (let Clauses (mapcan (lambda Rule (shen.rule->clause Rule)) V3170) (eval (cons defprolog (cons V3169 Clauses)))))
+
+(defun shen.rule->clause (V3173) (cond ((and (cons? V3173) (and (cons? (tl V3173)) (and (cons? (tl (tl V3173))) (and (cons? (hd (tl (tl V3173)))) (and (cons? (tl (hd (tl (tl V3173))))) (and (= () (tl (tl (hd (tl (tl V3173)))))) (= () (tl (tl (tl V3173)))))))))) (let Constraints (shen.extract-vars V3173) (let HypVs (shen.nvars (+ 1 (length (hd (hd (tl (tl V3173))))))) (let Active (shen.extract-vars (hd (tl (hd (tl (tl V3173)))))) (let Head (shen.compile-consequent (hd (tl (hd (tl (tl V3173))))) HypVs) (let Goals (shen.goals Constraints (hd (hd (tl (tl V3173)))) (hd V3173) (hd (tl V3173)) HypVs Active) (append Head (append (cons <-- ()) (append Goals (cons (intern ";") ())))))))))) (true (simple-error "implementation error in shen.rule->clause"))))
+
+(defun shen.compile-consequent (V3180 V3181) (cond ((cons? V3181) (cons (shen.optimise-typing V3180) (cons (hd V3181) ()))) (true (simple-error "implementation error in shen.compile-consequent"))))
+
+(defun shen.nvars (V3182) (cond ((= 0 V3182) ()) (true (cons (gensym (protect V)) (shen.nvars (- V3182 1))))))
+
+(defun shen.optimise-typing (V3183) (cond ((and (cons? V3183) (and (cons? (tl V3183)) (and (cons? (tl (tl V3183))) (and (= () (tl (tl (tl V3183)))) (= (hd (tl V3183)) (intern ":")))))) (cons - (cons (shen.cons-form-with-modes (cons (hd V3183) (cons (hd (tl V3183)) (cons (cons + (tl (tl V3183))) ())))) ()))) (true (cons + (cons (shen.cons-form-with-modes V3183) ())))))
+
+(defun shen.cons-form-with-modes (V3184) (cond ((and (cons? V3184) (and (= - (hd V3184)) (and (cons? (tl V3184)) (= () (tl (tl V3184)))))) (cons - (cons (shen.cons-form-with-modes (hd (tl V3184))) ()))) ((and (cons? V3184) (and (= + (hd V3184)) (and (cons? (tl V3184)) (= () (tl (tl V3184)))))) (cons + (cons (shen.cons-form-with-modes (hd (tl V3184))) ()))) ((and (cons? V3184) (and (= mode (hd V3184)) (and (cons? (tl V3184)) (and (cons? (tl (tl V3184))) (= () (tl (tl (tl V3184)))))))) (cons (hd (tl (tl V3184))) (cons (shen.cons-form-with-modes (hd (tl V3184))) ()))) ((and (cons? V3184) (and (= bar! (hd V3184)) (and (cons? (tl V3184)) (= () (tl (tl V3184)))))) (hd (tl V3184))) ((cons? V3184) (cons cons (cons (shen.cons-form-with-modes (hd V3184)) (cons (shen.cons-form-with-modes (tl V3184)) ())))) (true V3184)))
+
+(defun shen.goals (V3185 V3186 V3187 V3188 V3189 V3190) (let GoalsAs (shen.compile-assumptions V3186 V3185 V3189 V3190) (let GoalsS (shen.compile-side-conditions V3187) (let GoalsP (shen.compile-premises V3188 V3189) (append GoalsAs (append GoalsS GoalsP))))))
+
+(defun shen.compile-assumptions (V3205 V3206 V3207 V3208) (cond ((= () V3205) ()) ((and (cons? V3205) (and (cons? V3207) (cons? (tl V3207)))) (let NewActive (append (shen.extract-vars (hd V3205)) V3208) (cons (shen.compile-assumption (hd V3205) (hd V3207) (hd (tl V3207)) V3206 V3208) (shen.compile-assumptions (tl V3205) V3206 (tl V3207) NewActive)))) (true (simple-error "implementation error in shen.compile-assumptions"))))
+
+(defun shen.compile-assumption (V3209 V3210 V3211 V3212 V3213) (let F (gensym shen.search) (let Compile (shen.compile-search-procedure F V3209 V3210 V3211 V3212 V3213) (cons F (cons V3210 (cons () (cons V3211 V3212)))))))
+
+(defun shen.compile-search-procedure (V3214 V3215 V3216 V3217 V3218 V3219) (let Past (gensym (protect Previous)) (let Base (shen.foundit! V3215 V3216 Past V3217 V3218 V3219) (let Recursive (shen.keep-looking V3214 V3216 Past V3217 V3218) (eval (cons defprolog (cons V3214 (append Base Recursive))))))))
+
+(defun shen.foundit! (V3220 V3221 V3222 V3223 V3224 V3225) (let Passive (shen.passive V3220 V3225) (let Table (shen.tabulate-passive Passive) (let Head (shen.head-foundit! V3220 V3221 V3222 V3223 V3224 Table) (let Body (shen.body-foundit! V3221 V3222 V3223 Table) (append Head (append (cons <-- ()) (append Body (cons (intern ";") ())))))))))
+
+(defun shen.keep-looking (V3226 V3227 V3228 V3229 V3230) (let X (gensym (protect V)) (let Head (cons (cons - (cons (cons cons (cons X (cons V3227 ()))) ())) (cons V3228 (cons V3229 V3230))) (let Body (cons (cons V3226 (cons V3227 (cons (cons cons (cons X (cons V3228 ()))) (cons V3229 V3230)))) ()) (append Head (append (cons <-- ()) (append Body (cons (intern ";") ()))))))))
+
+(defun shen.passive (V3235 V3236) (cond ((cons? V3235) (union (shen.passive (hd V3235) V3236) (shen.passive (tl V3235) V3236))) ((shen.passive? V3235 V3236) (cons V3235 ())) (true ())))
+
+(defun shen.passive? (V3237 V3238) (and (not (element? V3237 V3238)) (variable? V3237)))
+
+(defun shen.tabulate-passive (V3239) (map (lambda X (cons X (gensym (protect V)))) V3239))
+
+(defun shen.head-foundit! (V3240 V3241 V3242 V3243 V3244 V3245) (let Optimise (shen.optimise-passive V3244 V3245) (cons (cons - (cons (cons cons (cons (shen.optimise-typing V3240) (cons V3241 ()))) ())) (cons V3242 (cons V3243 Optimise)))))
+
+(defun shen.optimise-passive (V3246 V3247) (map (lambda C (shen.optimise-passive-h C V3247)) V3246))
+
+(defun shen.optimise-passive-h (V3248 V3249) (let Entry (assoc V3248 V3249) (if (empty? Entry) V3248 (tl Entry))))
+
+(defun shen.body-foundit! (V3258 V3259 V3260 V3261) (cond ((= () V3261) (cons (cons bind (cons V3260 (cons (cons append (cons (cons 1 (cons V3259 ())) (cons (cons 1 (cons V3258 ())) ()))) ()))) ())) ((and (cons? V3261) (cons? (hd V3261))) (cons (cons bind (cons (tl (hd V3261)) (cons (hd (hd V3261)) ()))) (shen.body-foundit! V3258 V3259 V3260 (tl V3261)))) (true (simple-error "implementation error in shen.body-foundit!"))))
+
+(defun shen.compile-side-conditions (V3262) (map (lambda X (shen.compile-side-condition X)) V3262))
+
+(defun shen.compile-side-condition (V3265) (cond ((and (cons? V3265) (and (= let (hd V3265)) (and (cons? (tl V3265)) (and (cons? (tl (tl V3265))) (= () (tl (tl (tl V3265)))))))) (cons is (tl V3265))) ((and (cons? V3265) (and (= shen.let! (hd V3265)) (and (cons? (tl V3265)) (and (cons? (tl (tl V3265))) (= () (tl (tl (tl V3265)))))))) (cons is! (tl V3265))) ((and (cons? V3265) (and (= if (hd V3265)) (and (cons? (tl V3265)) (= () (tl (tl V3265)))))) (cons when (tl V3265))) (true (simple-error "implementation error in shen.compile-side-condition"))))
+
+(defun shen.compile-premises (V3266 V3267) (let Hyp (hd (reverse V3267)) (map (lambda X (shen.compile-premise X Hyp)) V3266)))
+
+(defun shen.compile-premise (V3274 V3275) (cond ((= ! V3274) !) ((and (cons? V3274) (and (cons? (tl V3274)) (= () (tl (tl V3274))))) (shen.compile-premise-h (reverse (hd V3274)) (hd (tl V3274)) V3275)) (true (simple-error "implementation error in shen.premise"))))
+
+(defun shen.compile-premise-h (V3282 V3283 V3284) (cond ((= () V3282) (cons shen.system-S (cons (shen.cons-form-no-modes V3283) (cons V3284 ())))) ((cons? V3282) (shen.compile-premise-h (tl V3282) V3283 (cons cons (cons (shen.cons-form-no-modes (hd V3282)) (cons V3284 ()))))) (true (simple-error "implementation error in shen.compile-premise-h"))))
+
+(defun shen.cons-form-no-modes (V3285) (cond ((and (cons? V3285) (and (= bar! (hd V3285)) (and (cons? (tl V3285)) (= () (tl (tl V3285)))))) (hd (tl V3285))) ((cons? V3285) (cons cons (cons (shen.cons-form-no-modes (hd V3285)) (cons (shen.cons-form-no-modes (tl V3285)) ())))) (true V3285)))
+
+(defun preclude (V3286) (let InternTypes (map (lambda X (shen.intern-type X)) V3286) (let Datatypes (value shen.*datatypes*) (let Remove (shen.remove-datatypes InternTypes Datatypes) (let NewDatatypes (set shen.*datatypes* Remove) (shen.show-datatypes NewDatatypes))))))
+
+(defun shen.remove-datatypes (V3291 V3292) (cond ((= () V3291) V3292) ((cons? V3291) (shen.remove-datatypes (tl V3291) (shen.unassoc (hd V3291) V3292))) (true (simple-error "implementation error in shen.remove-datatypes"))))
+
+(defun shen.unassoc (V3302 V3303) (cond ((= () V3303) ()) ((and (cons? V3303) (and (cons? (hd V3303)) (= V3302 (hd (hd V3303))))) (tl V3303)) ((cons? V3303) (cons (hd V3303) (shen.unassoc V3302 (tl V3303)))) (true (simple-error "implementation error in shen.unassoc"))))
+
+(defun shen.show-datatypes (V3304) (map (lambda X (hd X)) V3304))
+
+(defun include (V3305) (let InternTypes (map (lambda X (shen.intern-type X)) V3305) (let Remember (map (lambda D (shen.remember-datatype D (fn D))) InternTypes) (let Datatypes (value shen.*datatypes*) (shen.show-datatypes Datatypes)))))
+
+(defun preclude-all-but (V3306) (let Initialise (set shen.*datatypes* ()) (let InternTypes (map (lambda X (shen.intern-type X)) V3306) (let NewDatatypes (map (lambda D (shen.remember-datatype D (fn D))) InternTypes) (shen.show-datatypes (value shen.*datatypes*))))))
+
+(defun include-all-but (V3307) (let InternTypes (map (lambda X (shen.intern-type X)) V3307) (let AllDatatypes (value shen.*alldatatypes*) (let Datatypes (set shen.*datatypes* (shen.remove-datatypes InternTypes AllDatatypes)) (shen.show-datatypes Datatypes)))))
+
