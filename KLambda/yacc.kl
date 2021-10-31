@@ -1,0 +1,116 @@
+(defun compile (V10525 V10526) (let Compile (V10525 (cons V10526 (cons shen.no-action ()))) (if (shen.parsed? Compile) (shen.objectcode Compile) (simple-error "parse failure
+"))))
+
+(defun shen.parsed? (V10531) (cond ((shen.parse-failure? V10531) false) ((and (cons? V10531) (cons? (hd V10531))) (do (set shen.*residue* (hd V10531)) (simple-error (cn "syntax error here: " (shen.app (hd V10531) "
+ ..." shen.r))))) (true true)))
+
+(defun shen.parse-failure? (V10532) (= V10532 (fail)))
+
+(defun shen.objectcode (V10535) (cond ((and (cons? V10535) (and (cons? (tl V10535)) (= () (tl (tl V10535))))) (hd (tl V10535))) (true (simple-error (shen.app V10535 " is not a YACC stream
+" shen.s)))))
+
+(defun shen.yacc->shen (V10536) (compile (lambda X (shen.<yacc> X)) V10536))
+
+(defun shen.<yacc> (V10537) (let Result (if (shen.non-empty-stream? V10537) (let F (shen.hds V10537) (let News10496 (shen.tls V10537) (let Parseshen.<yaccsig> (shen.<yaccsig> News10496) (if (shen.parse-failure? Parseshen.<yaccsig>) (shen.parse-failure) (let Parseshen.<c-rules> (shen.<c-rules> Parseshen.<yaccsig>) (if (shen.parse-failure? Parseshen.<c-rules>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<c-rules>) (let Stream (gensym (protect S)) (let Def (append (cons define (cons F ())) (append (shen.<-out Parseshen.<yaccsig>) (cons Stream (cons -> (cons (shen.c-rules->shen (shen.<-out Parseshen.<yaccsig>) Stream (shen.<-out Parseshen.<c-rules>)) ()))))) Def))))))))) (shen.parse-failure)) (if (shen.parse-failure? Result) (shen.parse-failure) Result)))
+
+(defun shen.<yaccsig> (V10538) (let Result (if (shen.non-empty-stream? V10538) (let LC (shen.hds V10538) (let News10498 (shen.tls V10538) (if (shen.ccons? News10498) (let SynCons (shen.comb (shen.hds News10498) (shen.<-out News10498)) (if (shen.=hd? SynCons list) (let News10499 (shen.tls SynCons) (if (shen.non-empty-stream? News10499) (let A (shen.hds News10499) (let News10500 (shen.tls News10499) (let Parseshen.<end> (shen.<end> News10500) (if (shen.parse-failure? Parseshen.<end>) (shen.parse-failure) (if (shen.=hd? (shen.tlstream News10498) ==>) (let News10501 (shen.tls (shen.tlstream News10498)) (if (shen.non-empty-stream? News10501) (let B (shen.hds News10501) (let News10502 (shen.tls News10501) (if (shen.non-empty-stream? News10502) (let RC (shen.hds News10502) (let News10503 (shen.tls News10502) (if (and (= { LC) (= } RC)) (shen.comb (shen.in-> News10503) (let C (protect (gensym C)) (cons { (cons (cons str (cons (cons list (cons A ())) (cons (protect C) ()))) (cons --> (cons (cons str (cons (cons list (cons A ())) (cons B ()))) (cons } ()))))))) (shen.parse-failure)))) (shen.parse-failure)))) (shen.parse-failure))) (shen.parse-failure)))))) (shen.parse-failure))) (shen.parse-failure))) (shen.parse-failure)))) (shen.parse-failure)) (if (shen.parse-failure? Result) (let Result (let Parse<e> (<e> V10538) (if (shen.parse-failure? Parse<e>) (shen.parse-failure) (shen.comb (shen.in-> Parse<e>) ()))) (if (shen.parse-failure? Result) (shen.parse-failure) Result)) Result)))
+
+(defun shen.<c-rules> (V10539) (let Result (let Parseshen.<c-rule> (shen.<c-rule> V10539) (if (shen.parse-failure? Parseshen.<c-rule>) (shen.parse-failure) (let Parseshen.<c-rules> (shen.<c-rules> Parseshen.<c-rule>) (if (shen.parse-failure? Parseshen.<c-rules>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<c-rules>) (cons (shen.<-out Parseshen.<c-rule>) (shen.<-out Parseshen.<c-rules>))))))) (if (shen.parse-failure? Result) (let Result (let Parse<!> (<!> V10539) (if (shen.parse-failure? Parse<!>) (shen.parse-failure) (shen.comb (shen.in-> Parse<!>) (if (empty? (shen.<-out Parse<!>)) () (simple-error (cn "YACC syntax error here:
+ " (shen.app (shen.<-out Parse<!>) "
+ ..." shen.r))))))) (if (shen.parse-failure? Result) (shen.parse-failure) Result)) Result)))
+
+(defun shen.<c-rule> (V10540) (let Result (let Parseshen.<syntax> (shen.<syntax> V10540) (if (shen.parse-failure? Parseshen.<syntax>) (shen.parse-failure) (let Parseshen.<semantics> (shen.<semantics> Parseshen.<syntax>) (if (shen.parse-failure? Parseshen.<semantics>) (shen.parse-failure) (let Parseshen.<sc> (shen.<sc> Parseshen.<semantics>) (if (shen.parse-failure? Parseshen.<sc>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<sc>) (cons (shen.<-out Parseshen.<syntax>) (cons (shen.<-out Parseshen.<semantics>) ()))))))))) (if (shen.parse-failure? Result) (let Result (let Parseshen.<syntax> (shen.<syntax> V10540) (if (shen.parse-failure? Parseshen.<syntax>) (shen.parse-failure) (let Parseshen.<sc> (shen.<sc> Parseshen.<syntax>) (if (shen.parse-failure? Parseshen.<sc>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<sc>) (cons (shen.<-out Parseshen.<syntax>) (cons (shen.autocomplete (shen.<-out Parseshen.<syntax>)) ()))))))) (if (shen.parse-failure? Result) (shen.parse-failure) Result)) Result)))
+
+(defun shen.autocomplete (V10541) (cond ((and (cons? V10541) (and (= () (tl V10541)) (shen.non-terminal? (hd V10541)))) (hd V10541)) ((and (cons? V10541) (shen.non-terminal? (hd V10541))) (cons append (cons (hd V10541) (cons (shen.autocomplete (tl V10541)) ())))) ((cons? V10541) (cons cons (cons (shen.autocomplete (hd V10541)) (cons (shen.autocomplete (tl V10541)) ())))) (true V10541)))
+
+(defun shen.non-terminal? (V10542) (and (symbol? V10542) (let Explode (explode V10542) (compile (lambda X (shen.<non-terminal?> X)) Explode))))
+
+(defun shen.<non-terminal?> (V10543) (let Result (let Parseshen.<packagenames> (shen.<packagenames> V10543) (if (shen.parse-failure? Parseshen.<packagenames>) (shen.parse-failure) (let Parseshen.<non-terminal-name> (shen.<non-terminal-name> Parseshen.<packagenames>) (if (shen.parse-failure? Parseshen.<non-terminal-name>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<non-terminal-name>) true))))) (if (shen.parse-failure? Result) (let Result (let Parseshen.<non-terminal-name> (shen.<non-terminal-name> V10543) (if (shen.parse-failure? Parseshen.<non-terminal-name>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<non-terminal-name>) true))) (if (shen.parse-failure? Result) (let Result (let Parse<!> (<!> V10543) (if (shen.parse-failure? Parse<!>) (shen.parse-failure) (shen.comb (shen.in-> Parse<!>) false))) (if (shen.parse-failure? Result) (shen.parse-failure) Result)) Result)) Result)))
+
+(defun shen.<packagenames> (V10544) (let Result (let Parseshen.<packagename> (shen.<packagename> V10544) (if (shen.parse-failure? Parseshen.<packagename>) (shen.parse-failure) (if (shen.=hd? Parseshen.<packagename> ".") (let News10508 (shen.tls Parseshen.<packagename>) (let Parseshen.<packagenames> (shen.<packagenames> News10508) (if (shen.parse-failure? Parseshen.<packagenames>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<packagenames>) shen.skip)))) (shen.parse-failure)))) (if (shen.parse-failure? Result) (let Result (let Parseshen.<packagename> (shen.<packagename> V10544) (if (shen.parse-failure? Parseshen.<packagename>) (shen.parse-failure) (if (shen.=hd? Parseshen.<packagename> ".") (let News10509 (shen.tls Parseshen.<packagename>) (shen.comb (shen.in-> News10509) shen.skip)) (shen.parse-failure)))) (if (shen.parse-failure? Result) (shen.parse-failure) Result)) Result)))
+
+(defun shen.<packagename> (V10545) (let Result (let Parseshen.<packagechar> (shen.<packagechar> V10545) (if (shen.parse-failure? Parseshen.<packagechar>) (shen.parse-failure) (let Parseshen.<packagename> (shen.<packagename> Parseshen.<packagechar>) (if (shen.parse-failure? Parseshen.<packagename>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<packagename>) shen.skip))))) (if (shen.parse-failure? Result) (let Result (let Parse<e> (<e> V10545) (if (shen.parse-failure? Parse<e>) (shen.parse-failure) (shen.comb (shen.in-> Parse<e>) shen.skip))) (if (shen.parse-failure? Result) (shen.parse-failure) Result)) Result)))
+
+(defun shen.<packagechar> (V10546) (let Result (if (shen.non-empty-stream? V10546) (let X (shen.hds V10546) (let News10512 (shen.tls V10546) (if (not (= X ".")) (shen.comb (shen.in-> News10512) shen.skip) (shen.parse-failure)))) (shen.parse-failure)) (if (shen.parse-failure? Result) (shen.parse-failure) Result)))
+
+(defun shen.<non-terminal-name> (V10547) (let Result (if (shen.=hd? V10547 "<") (let News10514 (shen.tls V10547) (let Parse<!> (<!> News10514) (if (shen.parse-failure? Parse<!>) (shen.parse-failure) (if (let Reverse (reverse (shen.<-out Parse<!>)) (and (cons? Reverse) (= (hd Reverse) ">"))) (shen.comb (shen.in-> Parse<!>) shen.skip) (shen.parse-failure))))) (shen.parse-failure)) (if (shen.parse-failure? Result) (shen.parse-failure) Result)))
+
+(defun shen.semicolon? (V10548) (= V10548 (intern ";")))
+
+(defun shen.<colon-equal> (V10549) (let Result (if (shen.non-empty-stream? V10549) (let X (shen.hds V10549) (let News10516 (shen.tls V10549) (if (shen.colon-equal? X) (shen.comb (shen.in-> News10516) shen.skip) (shen.parse-failure)))) (shen.parse-failure)) (if (shen.parse-failure? Result) (shen.parse-failure) Result)))
+
+(defun shen.colon-equal? (V10550) (= (intern ":=") V10550))
+
+(defun shen.<syntax> (V10551) (let Result (let Parseshen.<syntax-item> (shen.<syntax-item> V10551) (if (shen.parse-failure? Parseshen.<syntax-item>) (shen.parse-failure) (let Parseshen.<syntax> (shen.<syntax> Parseshen.<syntax-item>) (if (shen.parse-failure? Parseshen.<syntax>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<syntax>) (cons (shen.<-out Parseshen.<syntax-item>) (shen.<-out Parseshen.<syntax>))))))) (if (shen.parse-failure? Result) (let Result (let Parseshen.<syntax-item> (shen.<syntax-item> V10551) (if (shen.parse-failure? Parseshen.<syntax-item>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<syntax-item>) (cons (shen.<-out Parseshen.<syntax-item>) ())))) (if (shen.parse-failure? Result) (shen.parse-failure) Result)) Result)))
+
+(defun shen.<syntax-item> (V10552) (let Result (if (shen.non-empty-stream? V10552) (let X (shen.hds V10552) (let News10519 (shen.tls V10552) (if (shen.syntax-item? X) (shen.comb (shen.in-> News10519) X) (shen.parse-failure)))) (shen.parse-failure)) (if (shen.parse-failure? Result) (shen.parse-failure) Result)))
+
+(defun shen.syntax-item? (V10555) (cond ((shen.colon-equal? V10555) false) ((shen.semicolon? V10555) false) ((atom? V10555) true) ((and (cons? V10555) (and (= cons (hd V10555)) (and (cons? (tl V10555)) (and (cons? (tl (tl V10555))) (= () (tl (tl (tl V10555)))))))) (and (shen.syntax-item? (hd (tl V10555))) (shen.syntax-item? (hd (tl (tl V10555)))))) (true false)))
+
+(defun shen.<semantics> (V10556) (let Result (let Parseshen.<colon-equal> (shen.<colon-equal> V10556) (if (shen.parse-failure? Parseshen.<colon-equal>) (shen.parse-failure) (if (shen.non-empty-stream? Parseshen.<colon-equal>) (let Semantics (shen.hds Parseshen.<colon-equal>) (let News10521 (shen.tls Parseshen.<colon-equal>) (if (shen.=hd? News10521 where) (let News10522 (shen.tls News10521) (if (shen.non-empty-stream? News10522) (let Guard (shen.hds News10522) (let News10523 (shen.tls News10522) (if (not (shen.semicolon? Semantics)) (shen.comb (shen.in-> News10523) (cons where (cons Guard (cons Semantics ())))) (shen.parse-failure)))) (shen.parse-failure))) (shen.parse-failure)))) (shen.parse-failure)))) (if (shen.parse-failure? Result) (let Result (let Parseshen.<colon-equal> (shen.<colon-equal> V10556) (if (shen.parse-failure? Parseshen.<colon-equal>) (shen.parse-failure) (if (shen.non-empty-stream? Parseshen.<colon-equal>) (let Semantics (shen.hds Parseshen.<colon-equal>) (let News10524 (shen.tls Parseshen.<colon-equal>) (if (not (shen.semicolon? Semantics)) (shen.comb (shen.in-> News10524) Semantics) (shen.parse-failure)))) (shen.parse-failure)))) (if (shen.parse-failure? Result) (shen.parse-failure) Result)) Result)))
+
+(defun shen.c-rules->shen (V10565 V10566 V10567) (cond ((= () V10567) (cons shen.parse-failure ())) ((cons? V10567) (shen.combine-c-code (shen.c-rule->shen V10565 (hd V10567) V10566) (shen.c-rules->shen V10565 V10566 (tl V10567)))) (true (simple-error "implementation error in shen.c-rules->shen
+"))))
+
+(defun shen.parse-failure () (fail))
+
+(defun shen.combine-c-code (V10568 V10569) (cons let (cons (protect Result) (cons V10568 (cons (cons if (cons (cons shen.parse-failure? (cons (protect Result) ())) (cons V10569 (cons (protect Result) ())))) ())))))
+
+(defun shen.c-rule->shen (V10576 V10577 V10578) (cond ((and (cons? V10577) (and (cons? (tl V10577)) (= () (tl (tl V10577))))) (shen.yacc-syntax V10576 V10578 (hd V10577) (hd (tl V10577)))) (true (simple-error "implementation error in shen.c-rule->shen
+"))))
+
+(defun shen.yacc-syntax (V10587 V10588 V10589 V10590) (cond ((and (= () V10589) (and (cons? V10590) (and (= where (hd V10590)) (and (cons? (tl V10590)) (and (cons? (tl (tl V10590))) (= () (tl (tl (tl V10590))))))))) (cons if (cons (shen.process-yacc-semantics (hd (tl V10590))) (cons (shen.yacc-syntax V10587 V10588 () (hd (tl (tl V10590)))) (cons (cons shen.parse-failure ()) ()))))) ((= () V10589) (shen.yacc-semantics V10587 V10588 V10590)) ((cons? V10589) (if (shen.non-terminal? (hd V10589)) (shen.non-terminalcode V10587 V10588 (hd V10589) (tl V10589) V10590) (if (variable? (hd V10589)) (shen.variablecode V10587 V10588 (hd V10589) (tl V10589) V10590) (if (= _ (hd V10589)) (shen.wildcardcode V10587 V10588 (hd V10589) (tl V10589) V10590) (if (atom? (hd V10589)) (shen.terminalcode V10587 V10588 (hd V10589) (tl V10589) V10590) (if (cons? (hd V10589)) (shen.conscode V10587 V10588 (hd V10589) (tl V10589) V10590) (simple-error "implementation error in shen.yacc-syntax
+"))))))) (true (simple-error "implementation error in shen.yacc-syntax
+"))))
+
+(defun shen.non-terminalcode (V10591 V10592 V10593 V10594 V10595) (let ApplyNonTerminal (concat (protect Parse) V10593) (cons let (cons ApplyNonTerminal (cons (cons V10593 (cons V10592 ())) (cons (cons if (cons (cons shen.parse-failure? (cons ApplyNonTerminal ())) (cons (cons shen.parse-failure ()) (cons (shen.yacc-syntax V10591 ApplyNonTerminal V10594 V10595) ())))) ()))))))
+
+(defun shen.variablecode (V10596 V10597 V10598 V10599 V10600) (let NewStream (gensym (protect News)) (cons if (cons (cons shen.non-empty-stream? (cons V10597 ())) (cons (cons let (cons V10598 (cons (cons shen.hds (cons V10597 ())) (cons NewStream (cons (cons shen.tls (cons V10597 ())) (cons (shen.yacc-syntax V10596 NewStream V10599 V10600) ())))))) (cons (cons shen.parse-failure ()) ()))))))
+
+(defun shen.wildcardcode (V10601 V10602 V10603 V10604 V10605) (let NewStream (gensym (protect News)) (cons if (cons (cons shen.non-empty-stream? (cons V10602 ())) (cons (cons let (cons NewStream (cons (cons shen.tls (cons V10602 ())) (cons (shen.yacc-syntax V10601 NewStream V10604 V10605) ())))) (cons (cons shen.parse-failure ()) ()))))))
+
+(defun shen.terminalcode (V10606 V10607 V10608 V10609 V10610) (let NewStream (gensym (protect News)) (cons if (cons (cons shen.=hd? (cons V10607 (cons V10608 ()))) (cons (cons let (cons NewStream (cons (cons shen.tls (cons V10607 ())) (cons (shen.yacc-syntax V10606 NewStream V10609 V10610) ())))) (cons (cons shen.parse-failure ()) ()))))))
+
+(defun shen.conscode (V10611 V10612 V10613 V10614 V10615) (cons if (cons (cons shen.ccons? (cons V10612 ())) (cons (cons let (cons (protect SynCons) (cons (cons shen.comb (cons (cons shen.hds (cons V10612 ())) (cons (cons shen.<-out (cons V10612 ())) ()))) (cons (shen.yacc-syntax V10611 (protect SynCons) (append (shen.decons V10613) (cons shen.<end> ())) (cons shen.pushsemantics (cons (cons shen.tlstream (cons V10612 ())) (cons V10614 (cons V10615 ()))))) ())))) (cons (cons shen.parse-failure ()) ())))))
+
+(defun shen.decons (V10616) (cond ((and (cons? V10616) (and (= cons (hd V10616)) (and (cons? (tl V10616)) (and (cons? (tl (tl V10616))) (= () (tl (tl (tl V10616)))))))) (cons (hd (tl V10616)) (shen.decons (hd (tl (tl V10616)))))) (true V10616)))
+
+(defun shen.ccons? (V10623) (cond ((and (cons? V10623) (and (cons? (hd V10623)) (and (cons? (tl V10623)) (= () (tl (tl V10623)))))) (cons? (hd (hd V10623)))) (true false)))
+
+(defun shen.non-empty-stream? (V10632) (cond ((and (cons? V10632) (cons? (hd V10632))) true) (true false)))
+
+(defun shen.hds (V10633) (hd (hd V10633)))
+
+(defun shen.hdstream (V10638) (cond ((and (cons? V10638) (and (cons? (hd V10638)) (and (cons? (tl V10638)) (= () (tl (tl V10638)))))) (cons (hd (hd V10638)) (tl V10638))) (true (simple-error "implementation error in shen.hdstream
+"))))
+
+(defun shen.comb (V10639 V10640) (cons V10639 (cons V10640 ())))
+
+(defun shen.tlstream (V10645) (cond ((and (cons? V10645) (and (cons? (hd V10645)) (and (cons? (tl V10645)) (= () (tl (tl V10645)))))) (cons (tl (hd V10645)) (tl V10645))) (true (simple-error "implementation error in shen.tlstream
+"))))
+
+(defun shen.=hd? (V10655 V10656) (cond ((and (cons? V10655) (and (cons? (hd V10655)) (= (hd (hd V10655)) V10656))) true) (true false)))
+
+(defun shen.tls (V10661) (cond ((and (cons? V10661) (and (cons? (hd V10661)) (and (cons? (tl V10661)) (= () (tl (tl V10661)))))) (cons (tl (hd V10661)) (tl V10661))) (true (simple-error "implementation error in shen.tls
+"))))
+
+(defun shen.yacc-semantics (V10664 V10665 V10666) (cond ((and (cons? V10666) (and (= shen.pushsemantics (hd V10666)) (and (cons? (tl V10666)) (and (cons? (tl (tl V10666))) (and (cons? (tl (tl (tl V10666)))) (= () (tl (tl (tl (tl V10666)))))))))) (shen.yacc-syntax V10664 (hd (tl V10666)) (hd (tl (tl V10666))) (hd (tl (tl (tl V10666)))))) (true (let Process (shen.process-yacc-semantics V10666) (let Annotate (shen.use-type-info V10664 Process) (cons shen.comb (cons (cons shen.in-> (cons V10665 ())) (cons Annotate ()))))))))
+
+(defun shen.use-type-info (V10670 V10671) (cond ((and (cons? V10670) (and (= { (hd V10670)) (and (cons? (tl V10670)) (and (cons? (hd (tl V10670))) (and (= str (hd (hd (tl V10670)))) (and (cons? (tl (hd (tl V10670)))) (and (cons? (hd (tl (hd (tl V10670))))) (and (= list (hd (hd (tl (hd (tl V10670)))))) (and (cons? (tl (hd (tl (hd (tl V10670)))))) (and (= () (tl (tl (hd (tl (hd (tl V10670))))))) (and (cons? (tl (tl (hd (tl V10670))))) (and (= () (tl (tl (tl (hd (tl V10670)))))) (and (cons? (tl (tl V10670))) (and (= --> (hd (tl (tl V10670)))) (and (cons? (tl (tl (tl V10670)))) (and (cons? (hd (tl (tl (tl V10670))))) (and (= str (hd (hd (tl (tl (tl V10670)))))) (and (cons? (tl (hd (tl (tl (tl V10670)))))) (and (cons? (hd (tl (hd (tl (tl (tl V10670))))))) (and (= list (hd (hd (tl (hd (tl (tl (tl V10670)))))))) (and (cons? (tl (hd (tl (hd (tl (tl (tl V10670)))))))) (and (= () (tl (tl (hd (tl (hd (tl (tl (tl V10670))))))))) (and (cons? (tl (tl (hd (tl (tl (tl V10670))))))) (and (= () (tl (tl (tl (hd (tl (tl (tl V10670)))))))) (and (cons? (tl (tl (tl (tl V10670))))) (and (= } (hd (tl (tl (tl (tl V10670)))))) (and (= () (tl (tl (tl (tl (tl V10670)))))) (= (hd (tl (hd (tl (hd (tl V10670)))))) (hd (tl (hd (tl (hd (tl (tl (tl V10670)))))))))))))))))))))))))))))))))))) (cons type (cons V10671 (tl (tl (hd (tl (tl (tl V10670))))))))) (true V10671)))
+
+(defun shen.process-yacc-semantics (V10672) (cond ((cons? V10672) (map (lambda Z (shen.process-yacc-semantics Z)) V10672)) ((shen.non-terminal? V10672) (cons shen.<-out (cons (concat (protect Parse) V10672) ()))) (true V10672)))
+
+(defun shen.<-out (V10677) (cond ((and (cons? V10677) (and (cons? (tl V10677)) (= () (tl (tl V10677))))) (hd (tl V10677))) (true (simple-error "implementation error in shen.<-out
+"))))
+
+(defun shen.in-> (V10682) (cond ((and (cons? V10682) (and (cons? (tl V10682)) (= () (tl (tl V10682))))) (hd V10682)) (true (simple-error "implementation error in shen.in->
+"))))
+
+(defun <!> (V10687) (cond ((and (cons? V10687) (and (cons? (tl V10687)) (= () (tl (tl V10687))))) (cons () (cons (hd V10687) ()))) (true (simple-error "implementation error in <!>
+"))))
+
+(defun <e> (V10692) (cond ((and (cons? V10692) (and (cons? (tl V10692)) (= () (tl (tl V10692))))) (cons (hd V10692) (cons () ()))) (true (simple-error "implementation error in <e>
+"))))
+
+(defun shen.<end> (V10695) (cond ((and (cons? V10695) (and (= () (hd V10695)) (and (cons? (tl V10695)) (= () (tl (tl V10695)))))) V10695) (true (shen.parse-failure))))
+
