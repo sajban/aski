@@ -1,0 +1,267 @@
+(defun read-file (V2728) (let Bytelist (read-file-as-bytelist V2728) (let S-exprs (trap-error (compile (lambda X (shen.<s-exprs> X)) Bytelist) (lambda E (shen.print-residue (value shen.*residue*)))) (let Process (shen.process-sexprs S-exprs) Process))))
+
+(defun shen.print-residue (V2729) (let Err (pr "syntax error here:
+" (stoutput)) (shen.nchars 50 V2729)))
+
+(defun shen.nchars (V2734 V2735) (cond ((= 0 V2734) (do (pr " ..." (stoutput)) (abort))) ((= () V2735) (do (pr " ..." (stoutput)) (abort))) ((cons? V2735) (do (pr (n->string (hd V2735)) (stoutput)) (shen.nchars (- V2734 1) (tl V2735)))) (true (shen.f-error shen.nchars))))
+
+(defun it () (value shen.*it*))
+
+(defun read-file-as-bytelist (V2736) (let Stream (open V2736 in) (let Byte (read-byte Stream) (let Bytes (shen.read-file-as-bytelist-help Stream Byte ()) (let Close (close Stream) (reverse Bytes))))))
+
+(defun shen.read-file-as-bytelist-help (V2737 V2738 V2739) (cond ((= -1 V2738) V2739) (true (shen.read-file-as-bytelist-help V2737 (read-byte V2737) (cons V2738 V2739)))))
+
+(defun read-file-as-string (V2740) (let Stream (open V2740 in) (shen.rfas-h Stream (read-byte Stream) "")))
+
+(defun shen.rfas-h (V2741 V2742 V2743) (cond ((= -1 V2742) (do (close V2741) V2743)) (true (shen.rfas-h V2741 (read-byte V2741) (cn V2743 (n->string V2742))))))
+
+(defun input (V2744) (eval-kl (read V2744)))
+
+(defun input+ (V2745 V2746) (let Mono? (shen.monotype V2745) (let Input (read V2746) (if (= false (shen.typecheck Input (shen.rectify-type V2745))) (simple-error (cn "type error: " (shen.app Input (cn " is not of type " (shen.app V2745 "
+" shen.r)) shen.r))) (eval-kl Input)))))
+
+(defun shen.monotype (V2747) (cond ((cons? V2747) (map (lambda Z (shen.monotype Z)) V2747)) (true (if (variable? V2747) (simple-error (cn "input+ expects a monotype: not " (shen.app V2747 "
+" shen.a))) V2747))))
+
+(defun lineread (V2748) (shen.read-loop V2748 (shen.my-read-byte V2748) () (lambda X (shen.return? X))))
+
+(defun read-from-string (V2749) (let Bytelist (shen.str->bytes V2749) (let S-exprs (compile (lambda X (shen.<s-exprs> X)) Bytelist) (let Process (shen.process-sexprs S-exprs) Process))))
+
+(defun read-from-string-unprocessed (V2750) (let Bytelist (shen.str->bytes V2750) (let S-exprs (compile (lambda X (shen.<s-exprs> X)) Bytelist) S-exprs)))
+
+(defun shen.str->bytes (V2751) (cond ((= "" V2751) ()) ((shen.+string? V2751) (cons (string->n (hdstr V2751)) (shen.str->bytes (tlstr V2751)))) (true (shen.f-error shen.str->bytes))))
+
+(defun read (V2752) (hd (shen.read-loop V2752 (shen.my-read-byte V2752) () (lambda X (shen.whitespace? X)))))
+
+(defun shen.my-read-byte (V2753) (if (shen.char-stinput? V2753) (string->n (shen.read-unit-string V2753)) (read-byte V2753)))
+
+(defun shen.read-loop (V2758 V2759 V2760 V2761) (cond ((= 94 V2759) (simple-error "read aborted")) ((= -1 V2759) (if (empty? V2760) (simple-error "error: empty stream") (compile (lambda X (shen.<s-exprs> X)) V2760))) ((= 0 V2759) (shen.read-loop V2758 (shen.my-read-byte V2758) V2760 V2761)) (true (if (V2761 V2759) (let Parse (shen.try-parse V2760) (if (shen.nothing-doing? Parse) (shen.read-loop V2758 (shen.my-read-byte V2758) (append V2760 (cons V2759 ())) V2761) (do (shen.record-it V2760) Parse))) (shen.read-loop V2758 (shen.my-read-byte V2758) (append V2760 (cons V2759 ())) V2761)))))
+
+(defun shen.try-parse (V2762) (let S-exprs (trap-error (compile (lambda X (shen.<s-exprs> X)) V2762) (lambda E shen.i-failed!)) (if (shen.nothing-doing? S-exprs) shen.i-failed! (shen.process-sexprs S-exprs))))
+
+(defun shen.nothing-doing? (V2765) (cond ((= shen.i-failed! V2765) true) ((= () V2765) true) (true false)))
+
+(defun shen.record-it (V2766) (set shen.*it* (shen.bytes->string V2766)))
+
+(defun shen.bytes->string (V2767) (cond ((= () V2767) "") ((cons? V2767) (cn (n->string (hd V2767)) (shen.bytes->string (tl V2767)))) (true (shen.f-error shen.bytes->string))))
+
+(defun shen.process-sexprs (V2768) (let Unpack&Expand (shen.unpackage&macroexpand V2768) (let FindArities (shen.find-arities Unpack&Expand) (let Types (shen.find-types Unpack&Expand) (map (lambda X (shen.process-applications X Types)) Unpack&Expand)))))
+
+(defun shen.find-types (V2769) (cond ((and (cons? V2769) (and (cons? (tl V2769)) (= (hd V2769) (intern ":")))) (cons (hd (tl V2769)) (shen.find-types (tl (tl V2769))))) ((cons? V2769) (append (shen.find-types (hd V2769)) (shen.find-types (tl V2769)))) (true ())))
+
+(defun shen.find-arities (V2772) (cond ((and (cons? V2772) (and (= define (hd V2772)) (and (cons? (tl V2772)) (and (cons? (tl (tl V2772))) (= { (hd (tl (tl V2772)))))))) (shen.store-arity (hd (tl V2772)) (shen.find-arity (hd (tl V2772)) 1 (tl (tl (tl V2772)))))) ((and (cons? V2772) (and (= define (hd V2772)) (cons? (tl V2772)))) (shen.store-arity (hd (tl V2772)) (shen.find-arity (hd (tl V2772)) 0 (tl (tl V2772))))) ((cons? V2772) (map (lambda Z (shen.find-arities Z)) V2772)) (true shen.skip)))
+
+(defun shen.store-arity (V2773 V2774) (let ArityF (arity V2773) (if (= ArityF -1) (shen.execute-store-arity V2773 V2774) (if (= ArityF V2774) shen.skip (do (pr (cn "changing the arity of " (shen.app V2773 " may cause errors
+" shen.a)) (stoutput)) (shen.execute-store-arity V2773 V2774))))))
+
+(defun shen.execute-store-arity (V2775 V2776) (cond ((= 0 V2776) (put V2775 arity 0 (value *property-vector*))) (true (do (put V2775 arity V2776 (value *property-vector*)) (shen.update-lambdatable V2775 V2776)))))
+
+(defun shen.update-lambdatable (V2777 V2778) (let LambdaTable (value shen.*lambdatable*) (let Lambda (eval-kl (shen.lambda-function (cons V2777 ()) V2778)) (let Insert (shen.assoc-> V2777 Lambda LambdaTable) (let Reset (set shen.*lambdatable* Insert) Reset)))))
+
+(defun shen.lambda-function (V2781 V2782) (cond ((= 0 V2782) shen.skip) ((= 1 V2782) (let X (protect (gensym Y)) (cons lambda (cons X (cons (append V2781 (cons X ())) ()))))) (true (let X (protect (gensym Y)) (cons lambda (cons X (cons (shen.lambda-function (append V2781 (cons X ())) (- V2782 1)) ())))))))
+
+(defun shen.assoc-> (V2792 V2793 V2794) (cond ((= () V2794) (cons (cons V2792 V2793) ())) ((and (cons? V2794) (and (cons? (hd V2794)) (= V2792 (hd (hd V2794))))) (cons (cons (hd (hd V2794)) V2793) (tl V2794))) ((cons? V2794) (cons (hd V2794) (shen.assoc-> V2792 V2793 (tl V2794)))) (true (simple-error "implementation error in shen.assoc->"))))
+
+(defun shen.find-arity (V2809 V2810 V2811) (cond ((and (= 0 V2810) (and (cons? V2811) (= (hd V2811) ->))) 0) ((and (= 0 V2810) (and (cons? V2811) (= (hd V2811) <-))) 0) ((and (= 0 V2810) (cons? V2811)) (+ 1 (shen.find-arity V2809 0 (tl V2811)))) ((and (= 1 V2810) (and (cons? V2811) (= } (hd V2811)))) (shen.find-arity V2809 0 (tl V2811))) ((and (= 1 V2810) (cons? V2811)) (shen.find-arity V2809 1 (tl V2811))) ((= 1 V2810) (simple-error (cn "syntax error in " (shen.app V2809 " definition: missing }
+" shen.a)))) (true (simple-error (cn "syntax error in " (shen.app V2809 " definition: missing -> or <-
+" shen.a))))))
+
+(defun shen.<s-exprs> (V2812) (let Result (let Parseshen.<lsb> (shen.<lsb> V2812) (if (shen.parse-failure? Parseshen.<lsb>) (shen.parse-failure) (let Parseshen.<s-exprs1> (shen.<s-exprs1> Parseshen.<lsb>) (if (shen.parse-failure? Parseshen.<s-exprs1>) (shen.parse-failure) (let Parseshen.<rsb> (shen.<rsb> Parseshen.<s-exprs1>) (if (shen.parse-failure? Parseshen.<rsb>) (shen.parse-failure) (let Parseshen.<s-exprs2> (shen.<s-exprs2> Parseshen.<rsb>) (if (shen.parse-failure? Parseshen.<s-exprs2>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<s-exprs2>) (cons (shen.cons-form (shen.<-out Parseshen.<s-exprs1>)) (shen.<-out Parseshen.<s-exprs2>))))))))))) (if (shen.parse-failure? Result) (let Result (let Parseshen.<lrb> (shen.<lrb> V2812) (if (shen.parse-failure? Parseshen.<lrb>) (shen.parse-failure) (let Parseshen.<s-exprs1> (shen.<s-exprs1> Parseshen.<lrb>) (if (shen.parse-failure? Parseshen.<s-exprs1>) (shen.parse-failure) (let Parseshen.<rrb> (shen.<rrb> Parseshen.<s-exprs1>) (if (shen.parse-failure? Parseshen.<rrb>) (shen.parse-failure) (let Parseshen.<s-exprs2> (shen.<s-exprs2> Parseshen.<rrb>) (if (shen.parse-failure? Parseshen.<s-exprs2>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<s-exprs2>) (shen.add-sexpr (shen.<-out Parseshen.<s-exprs1>) (shen.<-out Parseshen.<s-exprs2>))))))))))) (if (shen.parse-failure? Result) (let Result (let Parseshen.<lcurly> (shen.<lcurly> V2812) (if (shen.parse-failure? Parseshen.<lcurly>) (shen.parse-failure) (let Parseshen.<s-exprs> (shen.<s-exprs> Parseshen.<lcurly>) (if (shen.parse-failure? Parseshen.<s-exprs>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<s-exprs>) (cons { (shen.<-out Parseshen.<s-exprs>))))))) (if (shen.parse-failure? Result) (let Result (let Parseshen.<rcurly> (shen.<rcurly> V2812) (if (shen.parse-failure? Parseshen.<rcurly>) (shen.parse-failure) (let Parseshen.<s-exprs> (shen.<s-exprs> Parseshen.<rcurly>) (if (shen.parse-failure? Parseshen.<s-exprs>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<s-exprs>) (cons } (shen.<-out Parseshen.<s-exprs>))))))) (if (shen.parse-failure? Result) (let Result (let Parseshen.<bar> (shen.<bar> V2812) (if (shen.parse-failure? Parseshen.<bar>) (shen.parse-failure) (let Parseshen.<s-exprs> (shen.<s-exprs> Parseshen.<bar>) (if (shen.parse-failure? Parseshen.<s-exprs>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<s-exprs>) (cons bar! (shen.<-out Parseshen.<s-exprs>))))))) (if (shen.parse-failure? Result) (let Result (let Parseshen.<semicolon> (shen.<semicolon> V2812) (if (shen.parse-failure? Parseshen.<semicolon>) (shen.parse-failure) (let Parseshen.<s-exprs> (shen.<s-exprs> Parseshen.<semicolon>) (if (shen.parse-failure? Parseshen.<s-exprs>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<s-exprs>) (cons (intern ";") (shen.<-out Parseshen.<s-exprs>))))))) (if (shen.parse-failure? Result) (let Result (let Parseshen.<colon> (shen.<colon> V2812) (if (shen.parse-failure? Parseshen.<colon>) (shen.parse-failure) (let Parseshen.<equal> (shen.<equal> Parseshen.<colon>) (if (shen.parse-failure? Parseshen.<equal>) (shen.parse-failure) (let Parseshen.<s-exprs> (shen.<s-exprs> Parseshen.<equal>) (if (shen.parse-failure? Parseshen.<s-exprs>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<s-exprs>) (cons (intern ":=") (shen.<-out Parseshen.<s-exprs>))))))))) (if (shen.parse-failure? Result) (let Result (let Parseshen.<colon> (shen.<colon> V2812) (if (shen.parse-failure? Parseshen.<colon>) (shen.parse-failure) (let Parseshen.<s-exprs> (shen.<s-exprs> Parseshen.<colon>) (if (shen.parse-failure? Parseshen.<s-exprs>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<s-exprs>) (cons (intern ":") (shen.<-out Parseshen.<s-exprs>))))))) (if (shen.parse-failure? Result) (let Result (let Parseshen.<comma> (shen.<comma> V2812) (if (shen.parse-failure? Parseshen.<comma>) (shen.parse-failure) (let Parseshen.<s-exprs> (shen.<s-exprs> Parseshen.<comma>) (if (shen.parse-failure? Parseshen.<s-exprs>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<s-exprs>) (cons (intern ",") (shen.<-out Parseshen.<s-exprs>))))))) (if (shen.parse-failure? Result) (let Result (let Parseshen.<comment> (shen.<comment> V2812) (if (shen.parse-failure? Parseshen.<comment>) (shen.parse-failure) (let Parseshen.<s-exprs> (shen.<s-exprs> Parseshen.<comment>) (if (shen.parse-failure? Parseshen.<s-exprs>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<s-exprs>) (shen.<-out Parseshen.<s-exprs>)))))) (if (shen.parse-failure? Result) (let Result (let Parseshen.<atom> (shen.<atom> V2812) (if (shen.parse-failure? Parseshen.<atom>) (shen.parse-failure) (let Parseshen.<s-exprs> (shen.<s-exprs> Parseshen.<atom>) (if (shen.parse-failure? Parseshen.<s-exprs>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<s-exprs>) (cons (shen.<-out Parseshen.<atom>) (shen.<-out Parseshen.<s-exprs>))))))) (if (shen.parse-failure? Result) (let Result (let Parseshen.<whitespaces> (shen.<whitespaces> V2812) (if (shen.parse-failure? Parseshen.<whitespaces>) (shen.parse-failure) (let Parseshen.<s-exprs> (shen.<s-exprs> Parseshen.<whitespaces>) (if (shen.parse-failure? Parseshen.<s-exprs>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<s-exprs>) (shen.<-out Parseshen.<s-exprs>)))))) (if (shen.parse-failure? Result) (let Result (let Parse<e> (<e> V2812) (if (shen.parse-failure? Parse<e>) (shen.parse-failure) (shen.comb (shen.in-> Parse<e>) ()))) (if (shen.parse-failure? Result) (shen.parse-failure) Result)) Result)) Result)) Result)) Result)) Result)) Result)) Result)) Result)) Result)) Result)) Result)) Result)))
+
+(defun shen.add-sexpr (V2813 V2814) (cond ((and (cons? V2813) (and (= $ (hd V2813)) (and (cons? (tl V2813)) (= () (tl (tl V2813)))))) (append (explode (hd (tl V2813))) V2814)) (true (cons V2813 V2814))))
+
+(defun shen.<lsb> (V2815) (let Result (if (shen.=hd? V2815 91) (let News2497 (shen.tls V2815) (shen.comb (shen.in-> News2497) shen.skip)) (shen.parse-failure)) (if (shen.parse-failure? Result) (shen.parse-failure) Result)))
+
+(defun shen.<rsb> (V2816) (let Result (if (shen.=hd? V2816 93) (let News2499 (shen.tls V2816) (shen.comb (shen.in-> News2499) shen.skip)) (shen.parse-failure)) (if (shen.parse-failure? Result) (shen.parse-failure) Result)))
+
+(defun shen.<s-exprs1> (V2817) (let Result (let Parseshen.<s-exprs> (shen.<s-exprs> V2817) (if (shen.parse-failure? Parseshen.<s-exprs>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<s-exprs>) (shen.<-out Parseshen.<s-exprs>)))) (if (shen.parse-failure? Result) (shen.parse-failure) Result)))
+
+(defun shen.<s-exprs2> (V2818) (let Result (let Parseshen.<s-exprs> (shen.<s-exprs> V2818) (if (shen.parse-failure? Parseshen.<s-exprs>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<s-exprs>) (shen.<-out Parseshen.<s-exprs>)))) (if (shen.parse-failure? Result) (shen.parse-failure) Result)))
+
+(defun shen.cons-form (V2820) (cond ((= () V2820) ()) ((and (cons? V2820) (and (cons? (tl V2820)) (and (cons? (tl (tl V2820))) (and (= () (tl (tl (tl V2820)))) (= (hd (tl V2820)) bar!))))) (cons cons (cons (hd V2820) (tl (tl V2820))))) ((and (cons? V2820) (and (cons? (tl V2820)) (and (cons? (tl (tl V2820))) (and (cons? (tl (tl (tl V2820)))) (= (hd (tl V2820)) bar!))))) (simple-error "misapplication of |
+")) ((cons? V2820) (cons cons (cons (hd V2820) (cons (shen.cons-form (tl V2820)) ())))) (true (shen.f-error shen.cons-form))))
+
+(defun shen.<lrb> (V2821) (let Result (if (shen.=hd? V2821 40) (let News2503 (shen.tls V2821) (shen.comb (shen.in-> News2503) shen.skip)) (shen.parse-failure)) (if (shen.parse-failure? Result) (shen.parse-failure) Result)))
+
+(defun shen.<rrb> (V2822) (let Result (if (shen.=hd? V2822 41) (let News2505 (shen.tls V2822) (shen.comb (shen.in-> News2505) shen.skip)) (shen.parse-failure)) (if (shen.parse-failure? Result) (shen.parse-failure) Result)))
+
+(defun shen.<lcurly> (V2823) (let Result (if (shen.=hd? V2823 123) (let News2507 (shen.tls V2823) (shen.comb (shen.in-> News2507) shen.skip)) (shen.parse-failure)) (if (shen.parse-failure? Result) (shen.parse-failure) Result)))
+
+(defun shen.<rcurly> (V2824) (let Result (if (shen.=hd? V2824 125) (let News2509 (shen.tls V2824) (shen.comb (shen.in-> News2509) shen.skip)) (shen.parse-failure)) (if (shen.parse-failure? Result) (shen.parse-failure) Result)))
+
+(defun shen.<bar> (V2825) (let Result (if (shen.=hd? V2825 124) (let News2511 (shen.tls V2825) (shen.comb (shen.in-> News2511) shen.skip)) (shen.parse-failure)) (if (shen.parse-failure? Result) (shen.parse-failure) Result)))
+
+(defun shen.<semicolon> (V2826) (let Result (if (shen.=hd? V2826 59) (let News2513 (shen.tls V2826) (shen.comb (shen.in-> News2513) shen.skip)) (shen.parse-failure)) (if (shen.parse-failure? Result) (shen.parse-failure) Result)))
+
+(defun shen.<colon> (V2827) (let Result (if (shen.=hd? V2827 58) (let News2515 (shen.tls V2827) (shen.comb (shen.in-> News2515) shen.skip)) (shen.parse-failure)) (if (shen.parse-failure? Result) (shen.parse-failure) Result)))
+
+(defun shen.<comma> (V2828) (let Result (if (shen.=hd? V2828 44) (let News2517 (shen.tls V2828) (shen.comb (shen.in-> News2517) shen.skip)) (shen.parse-failure)) (if (shen.parse-failure? Result) (shen.parse-failure) Result)))
+
+(defun shen.<equal> (V2829) (let Result (if (shen.=hd? V2829 61) (let News2519 (shen.tls V2829) (shen.comb (shen.in-> News2519) shen.skip)) (shen.parse-failure)) (if (shen.parse-failure? Result) (shen.parse-failure) Result)))
+
+(defun shen.<comment> (V2830) (let Result (let Parseshen.<singleline> (shen.<singleline> V2830) (if (shen.parse-failure? Parseshen.<singleline>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<singleline>) shen.skip))) (if (shen.parse-failure? Result) (let Result (let Parseshen.<multiline> (shen.<multiline> V2830) (if (shen.parse-failure? Parseshen.<multiline>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<multiline>) shen.skip))) (if (shen.parse-failure? Result) (shen.parse-failure) Result)) Result)))
+
+(defun shen.<singleline> (V2831) (let Result (let Parseshen.<backslash> (shen.<backslash> V2831) (if (shen.parse-failure? Parseshen.<backslash>) (shen.parse-failure) (let Parseshen.<backslash> (shen.<backslash> Parseshen.<backslash>) (if (shen.parse-failure? Parseshen.<backslash>) (shen.parse-failure) (let Parseshen.<shortnatters> (shen.<shortnatters> Parseshen.<backslash>) (if (shen.parse-failure? Parseshen.<shortnatters>) (shen.parse-failure) (let Parseshen.<returns> (shen.<returns> Parseshen.<shortnatters>) (if (shen.parse-failure? Parseshen.<returns>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<returns>) shen.skip))))))))) (if (shen.parse-failure? Result) (shen.parse-failure) Result)))
+
+(defun shen.<backslash> (V2832) (let Result (if (shen.=hd? V2832 92) (let News2523 (shen.tls V2832) (shen.comb (shen.in-> News2523) shen.skip)) (shen.parse-failure)) (if (shen.parse-failure? Result) (shen.parse-failure) Result)))
+
+(defun shen.<shortnatters> (V2833) (let Result (let Parseshen.<shortnatter> (shen.<shortnatter> V2833) (if (shen.parse-failure? Parseshen.<shortnatter>) (shen.parse-failure) (let Parseshen.<shortnatters> (shen.<shortnatters> Parseshen.<shortnatter>) (if (shen.parse-failure? Parseshen.<shortnatters>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<shortnatters>) shen.skip))))) (if (shen.parse-failure? Result) (let Result (let Parse<e> (<e> V2833) (if (shen.parse-failure? Parse<e>) (shen.parse-failure) (shen.comb (shen.in-> Parse<e>) shen.skip))) (if (shen.parse-failure? Result) (shen.parse-failure) Result)) Result)))
+
+(defun shen.<shortnatter> (V2834) (let Result (if (shen.non-empty-stream? V2834) (let Byte (shen.hds V2834) (let News2526 (shen.tls V2834) (if (not (shen.return? Byte)) (shen.comb (shen.in-> News2526) shen.skip) (shen.parse-failure)))) (shen.parse-failure)) (if (shen.parse-failure? Result) (shen.parse-failure) Result)))
+
+(defun shen.<returns> (V2835) (let Result (let Parseshen.<return> (shen.<return> V2835) (if (shen.parse-failure? Parseshen.<return>) (shen.parse-failure) (let Parseshen.<returns> (shen.<returns> Parseshen.<return>) (if (shen.parse-failure? Parseshen.<returns>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<returns>) shen.skip))))) (if (shen.parse-failure? Result) (let Result (let Parseshen.<return> (shen.<return> V2835) (if (shen.parse-failure? Parseshen.<return>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<return>) shen.skip))) (if (shen.parse-failure? Result) (shen.parse-failure) Result)) Result)))
+
+(defun shen.<return> (V2836) (let Result (if (shen.non-empty-stream? V2836) (let Byte (shen.hds V2836) (let News2529 (shen.tls V2836) (if (shen.return? Byte) (shen.comb (shen.in-> News2529) shen.skip) (shen.parse-failure)))) (shen.parse-failure)) (if (shen.parse-failure? Result) (shen.parse-failure) Result)))
+
+(defun shen.return? (V2837) (element? V2837 (cons 9 (cons 10 (cons 13 ())))))
+
+(defun shen.<multiline> (V2838) (let Result (let Parseshen.<backslash> (shen.<backslash> V2838) (if (shen.parse-failure? Parseshen.<backslash>) (shen.parse-failure) (let Parseshen.<times> (shen.<times> Parseshen.<backslash>) (if (shen.parse-failure? Parseshen.<times>) (shen.parse-failure) (let Parseshen.<longnatter> (shen.<longnatter> Parseshen.<times>) (if (shen.parse-failure? Parseshen.<longnatter>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<longnatter>) shen.skip))))))) (if (shen.parse-failure? Result) (shen.parse-failure) Result)))
+
+(defun shen.<times> (V2839) (let Result (if (shen.=hd? V2839 42) (let News2532 (shen.tls V2839) (shen.comb (shen.in-> News2532) shen.skip)) (shen.parse-failure)) (if (shen.parse-failure? Result) (shen.parse-failure) Result)))
+
+(defun shen.<longnatter> (V2840) (let Result (let Parseshen.<comment> (shen.<comment> V2840) (if (shen.parse-failure? Parseshen.<comment>) (shen.parse-failure) (let Parseshen.<longnatter> (shen.<longnatter> Parseshen.<comment>) (if (shen.parse-failure? Parseshen.<longnatter>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<longnatter>) shen.skip))))) (if (shen.parse-failure? Result) (let Result (let Parseshen.<times> (shen.<times> V2840) (if (shen.parse-failure? Parseshen.<times>) (shen.parse-failure) (let Parseshen.<backslash> (shen.<backslash> Parseshen.<times>) (if (shen.parse-failure? Parseshen.<backslash>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<backslash>) shen.skip))))) (if (shen.parse-failure? Result) (let Result (if (shen.non-empty-stream? V2840) (let News2534 (shen.tls V2840) (let Parseshen.<longnatter> (shen.<longnatter> News2534) (if (shen.parse-failure? Parseshen.<longnatter>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<longnatter>) shen.skip)))) (shen.parse-failure)) (if (shen.parse-failure? Result) (shen.parse-failure) Result)) Result)) Result)))
+
+(defun shen.<atom> (V2841) (let Result (let Parseshen.<str> (shen.<str> V2841) (if (shen.parse-failure? Parseshen.<str>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<str>) (shen.<-out Parseshen.<str>)))) (if (shen.parse-failure? Result) (let Result (let Parseshen.<number> (shen.<number> V2841) (if (shen.parse-failure? Parseshen.<number>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<number>) (shen.<-out Parseshen.<number>)))) (if (shen.parse-failure? Result) (let Result (let Parseshen.<sym> (shen.<sym> V2841) (if (shen.parse-failure? Parseshen.<sym>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<sym>) (if (= (shen.<-out Parseshen.<sym>) "<>") (cons vector (cons 0 ())) (intern (shen.<-out Parseshen.<sym>)))))) (if (shen.parse-failure? Result) (shen.parse-failure) Result)) Result)) Result)))
+
+(defun shen.<sym> (V2842) (let Result (let Parseshen.<alpha> (shen.<alpha> V2842) (if (shen.parse-failure? Parseshen.<alpha>) (shen.parse-failure) (let Parseshen.<alphanums> (shen.<alphanums> Parseshen.<alpha>) (if (shen.parse-failure? Parseshen.<alphanums>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<alphanums>) (cn (shen.<-out Parseshen.<alpha>) (shen.<-out Parseshen.<alphanums>))))))) (if (shen.parse-failure? Result) (shen.parse-failure) Result)))
+
+(defun shen.<alpha> (V2843) (let Result (if (shen.non-empty-stream? V2843) (let Byte (shen.hds V2843) (let News2538 (shen.tls V2843) (if (shen.alpha? Byte) (shen.comb (shen.in-> News2538) (n->string Byte)) (shen.parse-failure)))) (shen.parse-failure)) (if (shen.parse-failure? Result) (shen.parse-failure) Result)))
+
+(defun shen.alpha? (V2844) (or (shen.lowercase? V2844) (or (shen.uppercase? V2844) (shen.misc? V2844))))
+
+(defun shen.lowercase? (V2845) (and (>= V2845 97) (<= V2845 122)))
+
+(defun shen.uppercase? (V2846) (and (>= V2846 65) (<= V2846 90)))
+
+(defun shen.misc? (V2847) (element? V2847 (cons 61 (cons 45 (cons 42 (cons 47 (cons 43 (cons 95 (cons 63 (cons 36 (cons 33 (cons 64 (cons 126 (cons 46 (cons 62 (cons 60 (cons 38 (cons 37 (cons 39 (cons 35 (cons 96 ())))))))))))))))))))))
+
+(defun shen.<alphanums> (V2848) (let Result (let Parseshen.<alphanum> (shen.<alphanum> V2848) (if (shen.parse-failure? Parseshen.<alphanum>) (shen.parse-failure) (let Parseshen.<alphanums> (shen.<alphanums> Parseshen.<alphanum>) (if (shen.parse-failure? Parseshen.<alphanums>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<alphanums>) (cn (shen.<-out Parseshen.<alphanum>) (shen.<-out Parseshen.<alphanums>))))))) (if (shen.parse-failure? Result) (let Result (let Parse<e> (<e> V2848) (if (shen.parse-failure? Parse<e>) (shen.parse-failure) (shen.comb (shen.in-> Parse<e>) ""))) (if (shen.parse-failure? Result) (shen.parse-failure) Result)) Result)))
+
+(defun shen.<alphanum> (V2849) (let Result (let Parseshen.<alpha> (shen.<alpha> V2849) (if (shen.parse-failure? Parseshen.<alpha>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<alpha>) (shen.<-out Parseshen.<alpha>)))) (if (shen.parse-failure? Result) (let Result (let Parseshen.<numeral> (shen.<numeral> V2849) (if (shen.parse-failure? Parseshen.<numeral>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<numeral>) (shen.<-out Parseshen.<numeral>)))) (if (shen.parse-failure? Result) (shen.parse-failure) Result)) Result)))
+
+(defun shen.<numeral> (V2850) (let Result (if (shen.non-empty-stream? V2850) (let Byte (shen.hds V2850) (let News2542 (shen.tls V2850) (if (shen.digit? Byte) (shen.comb (shen.in-> News2542) (n->string Byte)) (shen.parse-failure)))) (shen.parse-failure)) (if (shen.parse-failure? Result) (shen.parse-failure) Result)))
+
+(defun shen.digit? (V2851) (and (>= V2851 48) (<= V2851 57)))
+
+(defun shen.<str> (V2852) (let Result (let Parseshen.<dbq> (shen.<dbq> V2852) (if (shen.parse-failure? Parseshen.<dbq>) (shen.parse-failure) (let Parseshen.<strcontents> (shen.<strcontents> Parseshen.<dbq>) (if (shen.parse-failure? Parseshen.<strcontents>) (shen.parse-failure) (let Parseshen.<dbq> (shen.<dbq> Parseshen.<strcontents>) (if (shen.parse-failure? Parseshen.<dbq>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<dbq>) (shen.<-out Parseshen.<strcontents>)))))))) (if (shen.parse-failure? Result) (shen.parse-failure) Result)))
+
+(defun shen.<dbq> (V2853) (let Result (if (shen.=hd? V2853 34) (let News2545 (shen.tls V2853) (shen.comb (shen.in-> News2545) shen.skip)) (shen.parse-failure)) (if (shen.parse-failure? Result) (shen.parse-failure) Result)))
+
+(defun shen.<strcontents> (V2854) (let Result (let Parseshen.<strc> (shen.<strc> V2854) (if (shen.parse-failure? Parseshen.<strc>) (shen.parse-failure) (let Parseshen.<strcontents> (shen.<strcontents> Parseshen.<strc>) (if (shen.parse-failure? Parseshen.<strcontents>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<strcontents>) (cn (shen.<-out Parseshen.<strc>) (shen.<-out Parseshen.<strcontents>))))))) (if (shen.parse-failure? Result) (let Result (let Parse<e> (<e> V2854) (if (shen.parse-failure? Parse<e>) (shen.parse-failure) (shen.comb (shen.in-> Parse<e>) ""))) (if (shen.parse-failure? Result) (shen.parse-failure) Result)) Result)))
+
+(defun shen.<strc> (V2855) (let Result (let Parseshen.<control> (shen.<control> V2855) (if (shen.parse-failure? Parseshen.<control>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<control>) (shen.<-out Parseshen.<control>)))) (if (shen.parse-failure? Result) (let Result (let Parseshen.<notdbq> (shen.<notdbq> V2855) (if (shen.parse-failure? Parseshen.<notdbq>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<notdbq>) (shen.<-out Parseshen.<notdbq>)))) (if (shen.parse-failure? Result) (shen.parse-failure) Result)) Result)))
+
+(defun shen.<control> (V2856) (let Result (let Parseshen.<lowC> (shen.<lowC> V2856) (if (shen.parse-failure? Parseshen.<lowC>) (shen.parse-failure) (let Parseshen.<hash> (shen.<hash> Parseshen.<lowC>) (if (shen.parse-failure? Parseshen.<hash>) (shen.parse-failure) (let Parseshen.<integer> (shen.<integer> Parseshen.<hash>) (if (shen.parse-failure? Parseshen.<integer>) (shen.parse-failure) (let Parseshen.<semicolon> (shen.<semicolon> Parseshen.<integer>) (if (shen.parse-failure? Parseshen.<semicolon>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<semicolon>) (n->string (shen.<-out Parseshen.<integer>))))))))))) (if (shen.parse-failure? Result) (shen.parse-failure) Result)))
+
+(defun shen.<notdbq> (V2857) (let Result (if (shen.non-empty-stream? V2857) (let Byte (shen.hds V2857) (let News2550 (shen.tls V2857) (if (not (= Byte 34)) (shen.comb (shen.in-> News2550) (n->string Byte)) (shen.parse-failure)))) (shen.parse-failure)) (if (shen.parse-failure? Result) (shen.parse-failure) Result)))
+
+(defun shen.<lowC> (V2858) (let Result (if (shen.=hd? V2858 99) (let News2552 (shen.tls V2858) (shen.comb (shen.in-> News2552) shen.skip)) (shen.parse-failure)) (if (shen.parse-failure? Result) (shen.parse-failure) Result)))
+
+(defun shen.<hash> (V2859) (let Result (if (shen.=hd? V2859 35) (let News2554 (shen.tls V2859) (shen.comb (shen.in-> News2554) shen.skip)) (shen.parse-failure)) (if (shen.parse-failure? Result) (shen.parse-failure) Result)))
+
+(defun shen.<number> (V2860) (let Result (let Parseshen.<minus> (shen.<minus> V2860) (if (shen.parse-failure? Parseshen.<minus>) (shen.parse-failure) (let Parseshen.<number> (shen.<number> Parseshen.<minus>) (if (shen.parse-failure? Parseshen.<number>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<number>) (- 0 (shen.<-out Parseshen.<number>))))))) (if (shen.parse-failure? Result) (let Result (let Parseshen.<plus> (shen.<plus> V2860) (if (shen.parse-failure? Parseshen.<plus>) (shen.parse-failure) (let Parseshen.<number> (shen.<number> Parseshen.<plus>) (if (shen.parse-failure? Parseshen.<number>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<number>) (shen.<-out Parseshen.<number>)))))) (if (shen.parse-failure? Result) (let Result (let Parseshen.<e-number> (shen.<e-number> V2860) (if (shen.parse-failure? Parseshen.<e-number>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<e-number>) (shen.<-out Parseshen.<e-number>)))) (if (shen.parse-failure? Result) (let Result (let Parseshen.<float> (shen.<float> V2860) (if (shen.parse-failure? Parseshen.<float>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<float>) (shen.<-out Parseshen.<float>)))) (if (shen.parse-failure? Result) (let Result (let Parseshen.<integer> (shen.<integer> V2860) (if (shen.parse-failure? Parseshen.<integer>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<integer>) (shen.<-out Parseshen.<integer>)))) (if (shen.parse-failure? Result) (shen.parse-failure) Result)) Result)) Result)) Result)) Result)))
+
+(defun shen.<minus> (V2861) (let Result (if (shen.=hd? V2861 45) (let News2557 (shen.tls V2861) (shen.comb (shen.in-> News2557) shen.skip)) (shen.parse-failure)) (if (shen.parse-failure? Result) (shen.parse-failure) Result)))
+
+(defun shen.<plus> (V2862) (let Result (if (shen.=hd? V2862 43) (let News2559 (shen.tls V2862) (shen.comb (shen.in-> News2559) shen.skip)) (shen.parse-failure)) (if (shen.parse-failure? Result) (shen.parse-failure) Result)))
+
+(defun shen.<integer> (V2863) (let Result (let Parseshen.<digits> (shen.<digits> V2863) (if (shen.parse-failure? Parseshen.<digits>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<digits>) (shen.compute-integer (shen.<-out Parseshen.<digits>))))) (if (shen.parse-failure? Result) (shen.parse-failure) Result)))
+
+(defun shen.<digits> (V2864) (let Result (let Parseshen.<digit> (shen.<digit> V2864) (if (shen.parse-failure? Parseshen.<digit>) (shen.parse-failure) (let Parseshen.<digits> (shen.<digits> Parseshen.<digit>) (if (shen.parse-failure? Parseshen.<digits>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<digits>) (cons (shen.<-out Parseshen.<digit>) (shen.<-out Parseshen.<digits>))))))) (if (shen.parse-failure? Result) (let Result (let Parseshen.<digit> (shen.<digit> V2864) (if (shen.parse-failure? Parseshen.<digit>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<digit>) (cons (shen.<-out Parseshen.<digit>) ())))) (if (shen.parse-failure? Result) (shen.parse-failure) Result)) Result)))
+
+(defun shen.<digit> (V2865) (let Result (if (shen.non-empty-stream? V2865) (let Byte (shen.hds V2865) (let News2563 (shen.tls V2865) (if (shen.digit? Byte) (shen.comb (shen.in-> News2563) (shen.byte->digit Byte)) (shen.parse-failure)))) (shen.parse-failure)) (if (shen.parse-failure? Result) (shen.parse-failure) Result)))
+
+(defun shen.byte->digit (V2866) (- V2866 48))
+
+(defun shen.compute-integer (V2867) (shen.compute-integer-h (reverse V2867) 0))
+
+(defun shen.compute-integer-h (V2870 V2871) (cond ((= () V2870) 0) ((cons? V2870) (+ (* (shen.expt 10 V2871) (hd V2870)) (shen.compute-integer-h (tl V2870) (+ V2871 1)))) (true (shen.f-error shen.compute-integer-h))))
+
+(defun shen.expt (V2874 V2875) (cond ((= 0 V2875) 1) ((> V2875 0) (* V2874 (shen.expt V2874 (- V2875 1)))) (true (/ (shen.expt V2874 (+ V2875 1)) V2874))))
+
+(defun shen.<float> (V2876) (let Result (let Parseshen.<integer> (shen.<integer> V2876) (if (shen.parse-failure? Parseshen.<integer>) (shen.parse-failure) (let Parseshen.<stop> (shen.<stop> Parseshen.<integer>) (if (shen.parse-failure? Parseshen.<stop>) (shen.parse-failure) (let Parseshen.<fraction> (shen.<fraction> Parseshen.<stop>) (if (shen.parse-failure? Parseshen.<fraction>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<fraction>) (+ (shen.<-out Parseshen.<integer>) (shen.<-out Parseshen.<fraction>))))))))) (if (shen.parse-failure? Result) (let Result (let Parseshen.<stop> (shen.<stop> V2876) (if (shen.parse-failure? Parseshen.<stop>) (shen.parse-failure) (let Parseshen.<fraction> (shen.<fraction> Parseshen.<stop>) (if (shen.parse-failure? Parseshen.<fraction>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<fraction>) (shen.<-out Parseshen.<fraction>)))))) (if (shen.parse-failure? Result) (shen.parse-failure) Result)) Result)))
+
+(defun shen.<stop> (V2877) (let Result (if (shen.=hd? V2877 46) (let News2566 (shen.tls V2877) (shen.comb (shen.in-> News2566) shen.skip)) (shen.parse-failure)) (if (shen.parse-failure? Result) (shen.parse-failure) Result)))
+
+(defun shen.<fraction> (V2878) (let Result (let Parseshen.<digits> (shen.<digits> V2878) (if (shen.parse-failure? Parseshen.<digits>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<digits>) (shen.compute-fraction (shen.<-out Parseshen.<digits>))))) (if (shen.parse-failure? Result) (shen.parse-failure) Result)))
+
+(defun shen.compute-fraction (V2879) (shen.compute-fraction-h V2879 -1))
+
+(defun shen.compute-fraction-h (V2882 V2883) (cond ((= () V2882) 0) ((cons? V2882) (+ (* (shen.expt 10 V2883) (hd V2882)) (shen.compute-fraction-h (tl V2882) (- V2883 1)))) (true (shen.f-error shen.compute-fraction-h))))
+
+(defun shen.<e-number> (V2884) (let Result (let Parseshen.<float> (shen.<float> V2884) (if (shen.parse-failure? Parseshen.<float>) (shen.parse-failure) (let Parseshen.<lowE> (shen.<lowE> Parseshen.<float>) (if (shen.parse-failure? Parseshen.<lowE>) (shen.parse-failure) (let Parseshen.<log10> (shen.<log10> Parseshen.<lowE>) (if (shen.parse-failure? Parseshen.<log10>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<log10>) (shen.compute-E (shen.<-out Parseshen.<float>) (shen.<-out Parseshen.<log10>))))))))) (if (shen.parse-failure? Result) (let Result (let Parseshen.<integer> (shen.<integer> V2884) (if (shen.parse-failure? Parseshen.<integer>) (shen.parse-failure) (let Parseshen.<lowE> (shen.<lowE> Parseshen.<integer>) (if (shen.parse-failure? Parseshen.<lowE>) (shen.parse-failure) (let Parseshen.<log10> (shen.<log10> Parseshen.<lowE>) (if (shen.parse-failure? Parseshen.<log10>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<log10>) (shen.compute-E (shen.<-out Parseshen.<integer>) (shen.<-out Parseshen.<log10>))))))))) (if (shen.parse-failure? Result) (shen.parse-failure) Result)) Result)))
+
+(defun shen.<log10> (V2885) (let Result (let Parseshen.<plus> (shen.<plus> V2885) (if (shen.parse-failure? Parseshen.<plus>) (shen.parse-failure) (let Parseshen.<log10> (shen.<log10> Parseshen.<plus>) (if (shen.parse-failure? Parseshen.<log10>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<log10>) (shen.<-out Parseshen.<log10>)))))) (if (shen.parse-failure? Result) (let Result (let Parseshen.<minus> (shen.<minus> V2885) (if (shen.parse-failure? Parseshen.<minus>) (shen.parse-failure) (let Parseshen.<log10> (shen.<log10> Parseshen.<minus>) (if (shen.parse-failure? Parseshen.<log10>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<log10>) (- 0 (shen.<-out Parseshen.<log10>))))))) (if (shen.parse-failure? Result) (let Result (let Parseshen.<integer> (shen.<integer> V2885) (if (shen.parse-failure? Parseshen.<integer>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<integer>) (shen.<-out Parseshen.<integer>)))) (if (shen.parse-failure? Result) (shen.parse-failure) Result)) Result)) Result)))
+
+(defun shen.<lowE> (V2886) (let Result (if (shen.=hd? V2886 101) (let News2571 (shen.tls V2886) (shen.comb (shen.in-> News2571) shen.skip)) (shen.parse-failure)) (if (shen.parse-failure? Result) (shen.parse-failure) Result)))
+
+(defun shen.compute-E (V2887 V2888) (* V2887 (shen.expt 10 V2888)))
+
+(defun shen.<whitespaces> (V2889) (let Result (let Parseshen.<whitespace> (shen.<whitespace> V2889) (if (shen.parse-failure? Parseshen.<whitespace>) (shen.parse-failure) (let Parseshen.<whitespaces> (shen.<whitespaces> Parseshen.<whitespace>) (if (shen.parse-failure? Parseshen.<whitespaces>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<whitespaces>) shen.skip))))) (if (shen.parse-failure? Result) (let Result (let Parseshen.<whitespace> (shen.<whitespace> V2889) (if (shen.parse-failure? Parseshen.<whitespace>) (shen.parse-failure) (shen.comb (shen.in-> Parseshen.<whitespace>) shen.skip))) (if (shen.parse-failure? Result) (shen.parse-failure) Result)) Result)))
+
+(defun shen.<whitespace> (V2890) (let Result (if (shen.non-empty-stream? V2890) (let Byte (shen.hds V2890) (let News2574 (shen.tls V2890) (if (shen.whitespace? Byte) (shen.comb (shen.in-> News2574) shen.skip) (shen.parse-failure)))) (shen.parse-failure)) (if (shen.parse-failure? Result) (shen.parse-failure) Result)))
+
+(defun shen.whitespace? (V2893) (cond ((= 32 V2893) true) ((= 13 V2893) true) ((= 10 V2893) true) ((= 9 V2893) true) (true false)))
+
+(defun shen.unpackage&macroexpand (V2894) (cond ((= () V2894) ()) ((and (cons? V2894) (shen.packaged? (hd V2894))) (shen.unpackage&macroexpand (append (shen.unpackage (hd V2894)) (tl V2894)))) ((cons? V2894) (let M (macroexpand (hd V2894)) (if (shen.packaged? M) (shen.unpackage&macroexpand (cons M (tl V2894))) (cons M (shen.unpackage&macroexpand (tl V2894)))))) (true (shen.f-error shen.unpackage&macroexpand))))
+
+(defun shen.packaged? (V2897) (cond ((and (cons? V2897) (and (= package (hd V2897)) (and (cons? (tl V2897)) (cons? (tl (tl V2897)))))) true) (true false)))
+
+(defun shen.unpackage (V2900) (cond ((and (cons? V2900) (and (= package (hd V2900)) (and (cons? (tl V2900)) (and (= null (hd (tl V2900))) (cons? (tl (tl V2900))))))) (tl (tl (tl V2900)))) ((and (cons? V2900) (and (= package (hd V2900)) (and (cons? (tl V2900)) (cons? (tl (tl V2900)))))) (let External! (eval (hd (tl (tl V2900)))) (let Package (shen.package-symbols (str (hd (tl V2900))) External! (tl (tl (tl V2900)))) (let RecordExternal (shen.record-external (hd (tl V2900)) External!) Package)))) (true (shen.f-error shen.unpackage))))
+
+(defun shen.record-external (V2901 V2902) (let External (trap-error (get V2901 shen.external-symbols (value *property-vector*)) (lambda E ())) (put V2901 shen.external-symbols (union V2902 External) (value *property-vector*))))
+
+(defun shen.package-symbols (V2907 V2908 V2909) (cond ((cons? V2909) (map (lambda X (shen.package-symbols V2907 V2908 X)) V2909)) ((shen.internal? V2909 V2907 V2908) (shen.intern-in-package V2907 V2909)) (true V2909)))
+
+(defun shen.intern-in-package (V2910 V2911) (intern (@s V2910 (@s "." (str V2911)))))
+
+(defun shen.internal? (V2912 V2913 V2914) (and (not (element? V2912 V2914)) (and (not (shen.sng? V2912)) (and (not (shen.dbl? V2912)) (and (symbol? V2912) (and (not (shen.sysfunc? V2912)) (and (not (variable? V2912)) (and (not (shen.internal-to-shen? (str V2912))) (not (shen.internal-to-P? V2913 (str V2912)))))))))))
+
+(defun shen.internal-to-shen? (V2919) (cond ((and (shen.+string? V2919) (and (= "s" (hdstr V2919)) (and (shen.+string? (tlstr V2919)) (and (= "h" (hdstr (tlstr V2919))) (and (shen.+string? (tlstr (tlstr V2919))) (and (= "e" (hdstr (tlstr (tlstr V2919)))) (and (shen.+string? (tlstr (tlstr (tlstr V2919)))) (and (= "n" (hdstr (tlstr (tlstr (tlstr V2919))))) (and (shen.+string? (tlstr (tlstr (tlstr (tlstr V2919))))) (= "." (hdstr (tlstr (tlstr (tlstr (tlstr V2919))))))))))))))) true) (true false)))
+
+(defun shen.sysfunc? (V2920) (element? V2920 (get shen shen.external-symbols (value *property-vector*))))
+
+(defun shen.internal-to-P? (V2928 V2929) (cond ((and (= "" V2928) (and (shen.+string? V2929) (= "." (hdstr V2929)))) true) ((and (shen.+string? V2928) (and (shen.+string? V2929) (= (hdstr V2928) (hdstr V2929)))) (shen.internal-to-P? (tlstr V2928) (tlstr V2929))) (true false)))
+
+(defun shen.process-applications (V2932 V2933) (cond ((element? V2932 V2933) V2932) ((and (cons? V2932) (shen.non-application? (hd V2932))) (shen.special-case (hd V2932) V2932 V2933)) ((cons? V2932) (shen.process-application (map (lambda Y (shen.process-applications Y V2933)) V2932) V2933)) (true V2932)))
+
+(defun shen.non-application? (V2936) (cond ((= define V2936) true) ((= defun V2936) true) ((= synonyms V2936) true) ((shen.special? V2936) true) ((shen.extraspecial? V2936) true) (true false)))
+
+(defun shen.special-case (V2941 V2942 V2943) (cond ((and (= lambda V2941) (and (cons? V2942) (and (= lambda (hd V2942)) (and (cons? (tl V2942)) (and (cons? (tl (tl V2942))) (= () (tl (tl (tl V2942))))))))) (cons lambda (cons (hd (tl V2942)) (cons (shen.process-applications (hd (tl (tl V2942))) V2943) ())))) ((and (= let V2941) (and (cons? V2942) (and (= let (hd V2942)) (and (cons? (tl V2942)) (and (cons? (tl (tl V2942))) (and (cons? (tl (tl (tl V2942)))) (= () (tl (tl (tl (tl V2942))))))))))) (cons let (cons (hd (tl V2942)) (cons (shen.process-applications (hd (tl (tl V2942))) V2943) (cons (shen.process-applications (hd (tl (tl (tl V2942)))) V2943) ()))))) ((and (= defun V2941) (and (cons? V2942) (and (= defun (hd V2942)) (and (cons? (tl V2942)) (and (cons? (tl (tl V2942))) (and (cons? (tl (tl (tl V2942)))) (= () (tl (tl (tl (tl V2942))))))))))) V2942) ((and (= define V2941) (and (cons? V2942) (and (= define (hd V2942)) (and (cons? (tl V2942)) (and (cons? (tl (tl V2942))) (= { (hd (tl (tl V2942))))))))) (cons define (cons (hd (tl V2942)) (cons { (shen.process-after-type (hd (tl V2942)) (tl (tl (tl V2942))) V2943))))) ((and (= define V2941) (and (cons? V2942) (and (= define (hd V2942)) (cons? (tl V2942))))) (cons define (cons (hd (tl V2942)) (map (lambda Y (shen.process-applications Y V2943)) (tl (tl V2942)))))) ((= synonyms V2941) (cons synonyms V2942)) ((and (= type V2941) (and (cons? V2942) (and (= type (hd V2942)) (and (cons? (tl V2942)) (and (cons? (tl (tl V2942))) (= () (tl (tl (tl V2942))))))))) (cons type (cons (shen.process-applications (hd (tl V2942)) V2943) (tl (tl V2942))))) ((and (= input+ V2941) (and (cons? V2942) (and (= input+ (hd V2942)) (and (cons? (tl V2942)) (and (cons? (tl (tl V2942))) (= () (tl (tl (tl V2942))))))))) (cons input+ (cons (hd (tl V2942)) (cons (shen.process-applications (hd (tl (tl V2942))) V2943) ())))) ((and (cons? V2942) (shen.special? (hd V2942))) (cons (hd V2942) (map (lambda Y (shen.process-applications Y V2943)) (tl V2942)))) ((and (cons? V2942) (shen.extraspecial? (hd V2942))) V2942) (true (shen.f-error shen.special-case))))
+
+(defun shen.process-after-type (V2946 V2947 V2948) (cond ((and (cons? V2947) (= } (hd V2947))) (cons } (map (lambda Y (shen.process-applications Y V2948)) (tl V2947)))) ((cons? V2947) (cons (hd V2947) (shen.process-after-type V2946 (tl V2947) V2948))) (true (simple-error (cn "missing } in " (shen.app V2946 "
+" shen.a))))))
+
+(defun shen.process-application (V2949 V2950) (cond ((cons? V2949) (let ArityF (arity (hd V2949)) (let N (length (tl V2949)) (if (element? V2949 V2950) V2949 (if (shen.shen-call? (hd V2949)) V2949 (if (shen.fn-call? V2949) (shen.fn-call V2949) (if (shen.zero-place? V2949) V2949 (if (shen.undefined-f? (hd V2949) ArityF) (shen.simple-curry (cons (cons fn (cons (hd V2949) ())) (tl V2949))) (if (variable? (hd V2949)) (shen.simple-curry V2949) (if (shen.application? (hd V2949)) (shen.simple-curry V2949) (if (shen.partial-application*? (hd V2949) ArityF N) (shen.lambda-function V2949 (- ArityF N)) (if (shen.overapplication? (hd V2949) ArityF N) (shen.simple-curry V2949) V2949)))))))))))) (true (shen.f-error shen.process-application))))
+
+(defun shen.zero-place? (V2953) (cond ((and (cons? V2953) (= () (tl V2953))) true) (true false)))
+
+(defun shen.shen-call? (V2954) (and (symbol? V2954) (shen.internal-to-shen? (str V2954))))
+
+(defun shen.internal-to-shen? (V2959) (cond ((and (shen.+string? V2959) (and (= "s" (hdstr V2959)) (and (shen.+string? (tlstr V2959)) (and (= "h" (hdstr (tlstr V2959))) (and (shen.+string? (tlstr (tlstr V2959))) (and (= "e" (hdstr (tlstr (tlstr V2959)))) (and (shen.+string? (tlstr (tlstr (tlstr V2959)))) (and (= "n" (hdstr (tlstr (tlstr (tlstr V2959))))) (and (shen.+string? (tlstr (tlstr (tlstr (tlstr V2959))))) (= "." (hdstr (tlstr (tlstr (tlstr (tlstr V2959))))))))))))))) true) (true false)))
+
+(defun shen.application? (V2962) (cond ((and (cons? V2962) (and (= protect (hd V2962)) (and (cons? (tl V2962)) (= () (tl (tl V2962)))))) false) (true (cons? V2962))))
+
+(defun shen.undefined-f? (V2967 V2968) (cond ((= -1 V2968) (and (shen.lowercase-symbol? V2967) (not (element? V2967 (external shen))))) (true false)))
+
+(defun shen.lowercase-symbol? (V2969) (and (symbol? V2969) (not (variable? V2969))))
+
+(defun shen.simple-curry (V2970) (cond ((and (cons? V2970) (and (cons? (tl V2970)) (= () (tl (tl V2970))))) V2970) ((and (cons? V2970) (and (cons? (tl V2970)) (cons? (tl (tl V2970))))) (shen.simple-curry (cons (cons (hd V2970) (cons (hd (tl V2970)) ())) (tl (tl V2970))))) (true V2970)))
+
+(defun function (V2971) (fn V2971))
+
+(defun fn (V2972) (let LookUp (assoc V2972 (value shen.*lambdatable*)) (if (empty? LookUp) (simple-error (cn "fn: " (shen.app V2972 " is undefined
+" shen.a))) (tl LookUp))))
+
+(defun shen.fn-call? (V2975) (cond ((and (cons? V2975) (and (= fn (hd V2975)) (and (cons? (tl V2975)) (= () (tl (tl V2975)))))) true) ((and (cons? V2975) (and (= function (hd V2975)) (and (cons? (tl V2975)) (= () (tl (tl V2975)))))) true) (true false)))
+
+(defun shen.fn-call (V2976) (cond ((and (cons? V2976) (and (= function (hd V2976)) (and (cons? (tl V2976)) (= () (tl (tl V2976)))))) (shen.fn-call (cons fn (tl V2976)))) ((and (cons? V2976) (and (= fn (hd V2976)) (and (cons? (tl V2976)) (= () (tl (tl V2976)))))) (let ArityF (arity (hd (tl V2976))) (if (= ArityF -1) V2976 (if (= ArityF 0) (simple-error "fn cannot be applied to a zero place function
+") (shen.lambda-function (tl V2976) ArityF))))) (true (shen.f-error shen.fn-call))))
+
+(defun shen.partial-application*? (V2977 V2978 V2979) (let Verdict (> V2978 V2979) (let Message (if (and Verdict (and (shen.loading?) (not (element? V2977 (cons + (cons - ())))))) (pr (cn "partial application of " (shen.app V2977 "
+" shen.a)) (stoutput)) shen.skip) Verdict)))
+
+(defun shen.loading? () (value shen.*loading?*))
+
+(defun shen.overapplication? (V2984 V2985 V2986) (cond ((= -1 V2985) false) (true (let Verdict (< V2985 V2986) (let Message (if (and Verdict (shen.loading?)) (pr (shen.app V2984 (cn " might not like " (shen.app V2986 (cn " argument" (shen.app (if (= V2986 1) "" "s") "
+" shen.a)) shen.a)) shen.a) (stoutput)) shen.skip) Verdict)))))
