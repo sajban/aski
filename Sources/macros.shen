@@ -23,7 +23,7 @@
 (define defmacro-macro
   [defmacro F | Rest] -> (let Default [(protect X) -> (protect X)]
                               Def (eval [define F | (append Rest Default)])
-                              Record (record-macro F (fn X))
+                              Record (record-macro F (/. X (F X)))
                               F)
    X -> X)
 
