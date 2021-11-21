@@ -26,7 +26,7 @@
   (LET* ((In (OPEN KLFile :DIRECTION :INPUT 
                           :ELEMENT-TYPE :DEFAULT))
          (SourceCode (readsource In))
-         (ObjectCode (MAPCAR 'shen.kl-to-lisp SourceCode))
+         (ObjectCode (MAPCAR 'cl.kl-to-lisp SourceCode))
          (LispFile (FORMAT NIL "~A.lsp" KLFile))
          (Out (OPEN LispFile :DIRECTION :OUTPUT 
                              :ELEMENT-TYPE :DEFAULT

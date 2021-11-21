@@ -2,37 +2,37 @@
 
    3 clause BSD; see license"
 
-(DEFUN shen.double-precision (X)
+(DEFUN cl.double-precision (X)
   (IF (INTEGERP X) X (COERCE X 'DOUBLE-FLOAT)))
 
-(DECLAIM (INLINE shen.double-precision))
+(DECLAIM (INLINE cl.double-precision))
 
-(DEFUN shen.multiply (X Y)
+(DEFUN cl.multiply (X Y)
   (IF (OR (ZEROP X) (ZEROP Y))
       0
-      (* (shen.double-precision X) (shen.double-precision Y))))
+      (* (cl.double-precision X) (cl.double-precision Y))))
 
-(DEFUN shen.add (X Y) 
-  (+ (shen.double-precision X) (shen.double-precision Y)))
+(DEFUN cl.add (X Y) 
+  (+ (cl.double-precision X) (cl.double-precision Y)))
 
-(DEFUN shen.subtract (X Y) 
-  (- (shen.double-precision X) (shen.double-precision Y)))
+(DEFUN cl.subtract (X Y) 
+  (- (cl.double-precision X) (cl.double-precision Y)))
 
-(DEFUN shen.divide (X Y) 
-  (LET ((Div (/ (shen.double-precision X)
-                (shen.double-precision Y))))
+(DEFUN cl.divide (X Y) 
+  (LET ((Div (/ (cl.double-precision X)
+                (cl.double-precision Y))))
                       (IF (INTEGERP Div)
                            Div
                           (* (COERCE 1.0 'DOUBLE-FLOAT) Div))))
 
-(DEFUN shen.greater? (X Y) (IF (> X Y) 'true 'false))
+(DEFUN cl.greater? (X Y) (IF (> X Y) 'true 'false))
 
-(DEFUN shen.less? (X Y) (IF (< X Y) 'true 'false))
+(DEFUN cl.less? (X Y) (IF (< X Y) 'true 'false))
 
-(DEFUN shen.greater-than-or-equal-to? (X Y) 
+(DEFUN cl.greater-than-or-equal-to? (X Y) 
 	(IF (>= X Y) 'true 'false))
 
-(DEFUN shen.less-than-or-equal-to? (X Y) 
+(DEFUN cl.less-than-or-equal-to? (X Y) 
 	(IF (<= X Y) 'true 'false))
 
 (DEFUN number? (N) (IF (NUMBERP N) 'true 'false))

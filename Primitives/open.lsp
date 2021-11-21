@@ -4,9 +4,9 @@
 
 (DEFUN open (String Direction)
    (LET ((Path (FORMAT NIL "~A~A" *home-directory* String)))
-        (shen.openh Path Direction)))              
+        (cl.openh Path Direction)))              
 
-(DEFUN shen.openh (Path Direction) 
+(DEFUN cl.openh (Path Direction) 
       (COND ((EQ Direction 'in) 
              (OPEN Path :DIRECTION :INPUT 
                         :ELEMENT-TYPE '(UNSIGNED-BYTE 8))) 

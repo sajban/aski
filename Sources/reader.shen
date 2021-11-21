@@ -522,10 +522,10 @@
                                (zero-place? [F | X])              [F | X]
                                (undefined-f? F ArityF)            (simple-curry [[fn F] | X])
                                (variable? F)                      (simple-curry [F | X])
-                               (application? F)                   (simple-curry [F | X])         
+                               (application? F)                   (simple-curry [F | X])
                                (partial-application*? F ArityF N) (lambda-function [F | X] (- ArityF N))
                                (overapplication? F ArityF N)      (simple-curry [F | X])
-                               true                               [F | X])))
+                               true                               [F | X])))                         
                          
 (define zero-place?
   [F] -> true
@@ -539,6 +539,7 @@
   _ -> false)                           
                   
 (define application? 
+  [protect _] -> false
   F -> (cons? F))
                  	          
 (define undefined-f?
@@ -585,6 +586,7 @@
   -> (value *loading?*))                     
                           
 (define overapplication?
+  _ -1 _ -> false
   F ArityF N -> (let Verdict (< ArityF N)
                      Message (if (and Verdict (loading?)) 
                                (output "~A might not like ~A argument~A~%" 
