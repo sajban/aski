@@ -11,7 +11,7 @@
       *stoutput* *STANDARD-OUTPUT*)
 
 #+SBCL      
-(SETQ *release* "1.3.10")      
+(SETQ *release* "2.0.0")      
 
 #+CLISP
 (SETQ *release* "2.49")

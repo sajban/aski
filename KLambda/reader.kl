@@ -51,14 +51,15 @@
 
 (defun shen.find-arities (V2772) (cond ((and (cons? V2772) (and (= define (hd V2772)) (and (cons? (tl V2772)) (and (cons? (tl (tl V2772))) (= { (hd (tl (tl V2772)))))))) (shen.store-arity (hd (tl V2772)) (shen.find-arity (hd (tl V2772)) 1 (tl (tl (tl V2772)))))) ((and (cons? V2772) (and (= define (hd V2772)) (cons? (tl V2772)))) (shen.store-arity (hd (tl V2772)) (shen.find-arity (hd (tl V2772)) 0 (tl (tl V2772))))) ((cons? V2772) (map (lambda Z (shen.find-arities Z)) V2772)) (true shen.skip)))
 
-(defun shen.store-arity (V2773 V2774) (let ArityF (arity V2773) (if (= ArityF -1) (shen.execute-store-arity V2773 V2774) (if (= ArityF V2774) shen.skip (do (pr (cn "changing the arity of " (shen.app V2773 " may cause errors
-" shen.a)) (stoutput)) (shen.execute-store-arity V2773 V2774))))))
+(defun shen.store-arity (V2773 V2774) (let ArityF (arity V2773) (if (shen.sysfunc? V2773) (simple-error (shen.app V2773 " is a system function
+" shen.a)) (if (= ArityF -1) (shen.execute-store-arity V2773 V2774) (if (= ArityF V2774) shen.skip (do (pr (cn "changing the arity of " (shen.app V2773 " may cause errors
+" shen.a)) (stoutput)) (shen.execute-store-arity V2773 V2774)))))))
 
 (defun shen.execute-store-arity (V2775 V2776) (cond ((= 0 V2776) (put V2775 arity 0 (value *property-vector*))) (true (do (put V2775 arity V2776 (value *property-vector*)) (shen.update-lambdatable V2775 V2776)))))
 
 (defun shen.update-lambdatable (V2777 V2778) (let LambdaTable (value shen.*lambdatable*) (let Lambda (eval-kl (shen.lambda-function (cons V2777 ()) V2778)) (let Insert (shen.assoc-> V2777 Lambda LambdaTable) (let Reset (set shen.*lambdatable* Insert) Reset)))))
 
-(defun shen.lambda-function (V2781 V2782) (cond ((= 0 V2782) shen.skip) ((= 1 V2782) (let X (protect (gensym Y)) (cons lambda (cons X (cons (append V2781 (cons X ())) ()))))) (true (let X (protect (gensym Y)) (cons lambda (cons X (cons (shen.lambda-function (append V2781 (cons X ())) (- V2782 1)) ())))))))
+(defun shen.lambda-function (V2781 V2782) (cond ((= 0 V2782) shen.skip) ((= 1 V2782) (let X (gensym Y) (cons lambda (cons X (cons (append V2781 (cons X ())) ()))))) (true (let X (gensym Y) (cons lambda (cons X (cons (shen.lambda-function (append V2781 (cons X ())) (- V2782 1)) ())))))))
 
 (defun shen.assoc-> (V2792 V2793 V2794) (cond ((= () V2794) (cons (cons V2792 V2793) ())) ((and (cons? V2794) (and (cons? (hd V2794)) (= V2792 (hd (hd V2794))))) (cons (cons (hd (hd V2794)) V2793) (tl V2794))) ((cons? V2794) (cons (hd V2794) (shen.assoc-> V2792 V2793 (tl V2794)))) (true (simple-error "implementation error in shen.assoc->"))))
 

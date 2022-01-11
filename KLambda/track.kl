@@ -7,7 +7,7 @@
 
 (defun shen.track-function (V4572) (cond ((and (cons? V4572) (and (= defun (hd V4572)) (and (cons? (tl V4572)) (and (cons? (tl (tl V4572))) (and (cons? (tl (tl (tl V4572)))) (= () (tl (tl (tl (tl V4572)))))))))) (let KL (cons defun (cons (hd (tl V4572)) (cons (hd (tl (tl V4572))) (cons (shen.insert-tracking-code (hd (tl V4572)) (hd (tl (tl V4572))) (hd (tl (tl (tl V4572))))) ())))) (let Ob (eval-kl KL) (let Tr (set shen.*tracking* (cons Ob (value shen.*tracking*))) Ob)))) (true (simple-error "implementation error in shen.track-function"))))
 
-(defun shen.insert-tracking-code (V4573 V4574 V4575) (cons do (cons (cons set (cons shen.*call* (cons (cons + (cons (cons value (cons shen.*call* ())) (cons 1 ()))) ()))) (cons (cons do (cons (cons shen.input-track (cons (cons value (cons shen.*call* ())) (cons V4573 (cons (shen.cons-form (shen.prolog-track V4575 V4574)) ())))) (cons (cons do (cons (cons shen.terpri-or-read-char ()) (cons (cons let (cons (protect Result) (cons V4575 (cons (cons do (cons (cons shen.output-track (cons (cons value (cons shen.*call* ())) (cons V4573 (cons (protect Result) ())))) (cons (cons do (cons (cons set (cons shen.*call* (cons (cons - (cons (cons value (cons shen.*call* ())) (cons 1 ()))) ()))) (cons (cons do (cons (cons shen.terpri-or-read-char ()) (cons (protect Result) ()))) ()))) ()))) ())))) ()))) ()))) ()))))
+(defun shen.insert-tracking-code (V4573 V4574 V4575) (cons do (cons (cons set (cons shen.*call* (cons (cons + (cons (cons value (cons shen.*call* ())) (cons 1 ()))) ()))) (cons (cons do (cons (cons shen.input-track (cons (cons value (cons shen.*call* ())) (cons V4573 (cons (shen.cons-form (shen.prolog-track V4575 V4574)) ())))) (cons (cons do (cons (cons shen.terpri-or-read-char ()) (cons (cons let (cons Result (cons V4575 (cons (cons do (cons (cons shen.output-track (cons (cons value (cons shen.*call* ())) (cons V4573 (cons Result ())))) (cons (cons do (cons (cons set (cons shen.*call* (cons (cons - (cons (cons value (cons shen.*call* ())) (cons 1 ()))) ()))) (cons (cons do (cons (cons shen.terpri-or-read-char ()) (cons Result ()))) ()))) ()))) ())))) ()))) ()))) ()))))
 
 (defun shen.prolog-track (V4576 V4577) (cond ((= (occurrences shen.incinfs V4576) 0) V4577) (true (shen.vector-dereference V4577 (shen.vector-parameter V4577)))))
 
@@ -52,7 +52,7 @@
 
 (defun shen.profiled? (V4624) (element? V4624 (value shen.*profiled*)))
 
-(defun shen.profile-func (V4625 V4626 V4627) (cons let (cons (protect Start) (cons (cons get-time (cons run ())) (cons (cons let (cons (protect Result) (cons V4627 (cons (cons let (cons (protect Finish) (cons (cons - (cons (cons get-time (cons run ())) (cons (protect Start) ()))) (cons (cons let (cons (protect Record) (cons (cons shen.put-profile (cons V4625 (cons (cons + (cons (cons shen.get-profile (cons V4625 ())) (cons (protect Finish) ()))) ()))) (cons (protect Result) ())))) ())))) ())))) ())))))
+(defun shen.profile-func (V4625 V4626 V4627) (cons let (cons Start (cons (cons get-time (cons run ())) (cons (cons let (cons Result (cons V4627 (cons (cons let (cons Finish (cons (cons - (cons (cons get-time (cons run ())) (cons Start ()))) (cons (cons let (cons Record (cons (cons shen.put-profile (cons V4625 (cons (cons + (cons (cons shen.get-profile (cons V4625 ())) (cons Finish ()))) ()))) (cons Result ())))) ())))) ())))) ())))))
 
 (defun profile-results (V4628) (let Results (shen.get-profile V4628) (let Initialise (shen.put-profile V4628 0) (@p V4628 Results))))
 

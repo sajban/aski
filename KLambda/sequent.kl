@@ -30,7 +30,7 @@
 
 (defun shen.<side> (V3141) (let Result (if (shen.=hd? V3141 if) (let News3008 (shen.tls V3141) (if (shen.non-empty-stream? News3008) (let P (shen.hds News3008) (let News3009 (shen.tls News3008) (shen.comb (shen.in-> News3009) (cons if (cons P ()))))) (shen.parse-failure))) (shen.parse-failure)) (if (shen.parse-failure? Result) (let Result (if (shen.=hd? V3141 let) (let News3010 (shen.tls V3141) (if (shen.non-empty-stream? News3010) (let X (shen.hds News3010) (let News3011 (shen.tls News3010) (if (shen.non-empty-stream? News3011) (let Y (shen.hds News3011) (let News3012 (shen.tls News3011) (shen.comb (shen.in-> News3012) (cons let (cons X (cons Y ())))))) (shen.parse-failure)))) (shen.parse-failure))) (shen.parse-failure)) (if (shen.parse-failure? Result) (let Result (if (shen.=hd? V3141 shen.let!) (let News3013 (shen.tls V3141) (if (shen.non-empty-stream? News3013) (let X (shen.hds News3013) (let News3014 (shen.tls News3013) (if (shen.non-empty-stream? News3014) (let Y (shen.hds News3014) (let News3015 (shen.tls News3014) (shen.comb (shen.in-> News3015) (cons shen.let! (cons X (cons Y ())))))) (shen.parse-failure)))) (shen.parse-failure))) (shen.parse-failure)) (if (shen.parse-failure? Result) (shen.parse-failure) Result)) Result)) Result)))
 
-(defun shen.lr-rule (V3148 V3149 V3150) (cond ((and (cons? V3150) (and (= () (hd V3150)) (and (cons? (tl V3150)) (= () (tl (tl V3150)))))) (let P (gensym (protect P)) (let LConc (cons (tl V3150) (cons P ())) (let LPrem (cons (shen.coll-formulae V3149) (cons P ())) (let Left (cons V3148 (cons (cons LPrem ()) (cons LConc ()))) (let Right (cons V3148 (cons V3149 (cons V3150 ()))) (cons Right (cons Left ())))))))) (true (simple-error "implementation error in shen.lr-rule"))))
+(defun shen.lr-rule (V3148 V3149 V3150) (cond ((and (cons? V3150) (and (= () (hd V3150)) (and (cons? (tl V3150)) (= () (tl (tl V3150)))))) (let P (gensym P) (let LConc (cons (tl V3150) (cons P ())) (let LPrem (cons (shen.coll-formulae V3149) (cons P ())) (let Left (cons V3148 (cons (cons LPrem ()) (cons LConc ()))) (let Right (cons V3148 (cons V3149 (cons V3150 ()))) (cons Right (cons Left ())))))))) (true (simple-error "implementation error in shen.lr-rule"))))
 
 (defun shen.coll-formulae (V3153) (cond ((= () V3153) ()) ((and (cons? V3153) (and (cons? (hd V3153)) (and (= () (hd (hd V3153))) (and (cons? (tl (hd V3153))) (= () (tl (tl (hd V3153)))))))) (cons (hd (tl (hd V3153))) (shen.coll-formulae (tl V3153)))) (true (simple-error "implementation error in shen.coll-formulae"))))
 
@@ -60,7 +60,7 @@
 
 (defun shen.compile-consequent (V3180 V3181) (cond ((cons? V3181) (cons (shen.optimise-typing V3180) (cons (hd V3181) ()))) (true (simple-error "implementation error in shen.compile-consequent"))))
 
-(defun shen.nvars (V3182) (cond ((= 0 V3182) ()) (true (cons (gensym (protect V)) (shen.nvars (- V3182 1))))))
+(defun shen.nvars (V3182) (cond ((= 0 V3182) ()) (true (cons (gensym V) (shen.nvars (- V3182 1))))))
 
 (defun shen.optimise-typing (V3183) (cond ((and (cons? V3183) (and (cons? (tl V3183)) (and (cons? (tl (tl V3183))) (and (= () (tl (tl (tl V3183)))) (= (hd (tl V3183)) (intern ":")))))) (cons - (cons (shen.cons-form-with-modes (cons (hd V3183) (cons (hd (tl V3183)) (cons (cons + (tl (tl V3183))) ())))) ()))) (true (cons + (cons (shen.cons-form-with-modes V3183) ())))))
 
@@ -72,17 +72,17 @@
 
 (defun shen.compile-assumption (V3209 V3210 V3211 V3212 V3213) (let F (gensym shen.search) (let Compile (shen.compile-search-procedure F V3209 V3210 V3211 V3212 V3213) (cons F (cons V3210 (cons () (cons V3211 V3212)))))))
 
-(defun shen.compile-search-procedure (V3214 V3215 V3216 V3217 V3218 V3219) (let Past (gensym (protect Previous)) (let Base (shen.foundit! V3215 V3216 Past V3217 V3218 V3219) (let Recursive (shen.keep-looking V3214 V3216 Past V3217 V3218) (eval (cons defprolog (cons V3214 (append Base Recursive))))))))
+(defun shen.compile-search-procedure (V3214 V3215 V3216 V3217 V3218 V3219) (let Past (gensym Previous) (let Base (shen.foundit! V3215 V3216 Past V3217 V3218 V3219) (let Recursive (shen.keep-looking V3214 V3216 Past V3217 V3218) (eval (cons defprolog (cons V3214 (append Base Recursive))))))))
 
 (defun shen.foundit! (V3220 V3221 V3222 V3223 V3224 V3225) (let Passive (shen.passive V3220 V3225) (let Table (shen.tabulate-passive Passive) (let Head (shen.head-foundit! V3220 V3221 V3222 V3223 V3224 Table) (let Body (shen.body-foundit! V3221 V3222 V3223 Table) (append Head (append (cons <-- ()) (append Body (cons (intern ";") ())))))))))
 
-(defun shen.keep-looking (V3226 V3227 V3228 V3229 V3230) (let X (gensym (protect V)) (let Head (cons (cons - (cons (cons cons (cons X (cons V3227 ()))) ())) (cons V3228 (cons V3229 V3230))) (let Body (cons (cons V3226 (cons V3227 (cons (cons cons (cons X (cons V3228 ()))) (cons V3229 V3230)))) ()) (append Head (append (cons <-- ()) (append Body (cons (intern ";") ()))))))))
+(defun shen.keep-looking (V3226 V3227 V3228 V3229 V3230) (let X (gensym V) (let Head (cons (cons - (cons (cons cons (cons X (cons V3227 ()))) ())) (cons V3228 (cons V3229 V3230))) (let Body (cons (cons V3226 (cons V3227 (cons (cons cons (cons X (cons V3228 ()))) (cons V3229 V3230)))) ()) (append Head (append (cons <-- ()) (append Body (cons (intern ";") ()))))))))
 
 (defun shen.passive (V3235 V3236) (cond ((cons? V3235) (union (shen.passive (hd V3235) V3236) (shen.passive (tl V3235) V3236))) ((shen.passive? V3235 V3236) (cons V3235 ())) (true ())))
 
 (defun shen.passive? (V3237 V3238) (and (not (element? V3237 V3238)) (variable? V3237)))
 
-(defun shen.tabulate-passive (V3239) (map (lambda X (cons X (gensym (protect V)))) V3239))
+(defun shen.tabulate-passive (V3239) (map (lambda X (cons X (gensym V))) V3239))
 
 (defun shen.head-foundit! (V3240 V3241 V3242 V3243 V3244 V3245) (let Optimise (shen.optimise-passive V3244 V3245) (cons (cons - (cons (cons cons (cons (shen.optimise-typing V3240) (cons V3241 ()))) ())) (cons V3242 (cons V3243 Optimise)))))
 
