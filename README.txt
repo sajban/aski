@@ -1,0 +1,1 @@
+to install cd to this directory and type (load "install.shen")
