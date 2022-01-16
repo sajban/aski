@@ -50,7 +50,7 @@
 
 (set shen.*optimise* false)
 
-(set *version* "31.01")
+(set *version* "31.02")
 
 (set shen.*step* false)
 

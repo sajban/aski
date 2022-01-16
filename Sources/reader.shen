@@ -539,6 +539,7 @@
   _ -> false)
 
 (define application?
+  [protect _] -> false
   F -> (cons? F))
 
 (define undefined-f?
@@ -585,6 +586,7 @@
   -> (value *loading?*))
 
 (define overapplication?
+  _ -1 _ -> false
   F ArityF N -> (let Verdict (< ArityF N)
                      Message (if (and Verdict (loading?))
                                (output "~A might not like ~A argument~A~%"
