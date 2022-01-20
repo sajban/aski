@@ -1,0 +1,4 @@
+#+title: Aski
+* Sajban Precursor
+Aski is a fork of [[https://github.com/Shen-Language/shen-sources][shen]] created in order to achieve [[https://github.com/sajban/sajban][sajban]].
+It can therefore be thought of a sajban precursor.
