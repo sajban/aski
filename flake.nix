@@ -80,7 +80,7 @@
         , version ? kor.mkImplicitVersion src
         , corePrimitives ? (LispCore + /primitives.lsp)
         , extendedPrimitives ? (LispExtendedPrimitives + /primitives.lsp)
-        , lispMake ? (LispCore + /make.lsp)
+        , lispMakeCore ? (LispCore + /make.lsp)
         , withExtension ? true
         , lispBackend ? (LispCore + /backend.lsp)
         , shenCoreTests ? inputs.ShenCoreTests
@@ -102,13 +102,13 @@
             (LOAD "${sbcl}/lib/sbcl/contrib/uiop.fasl")
           '';
 
-          lispExtendedMake = writeText "make.lsp"
+          lispMakeExtended = writeText "make.lsp"
             (builtins.concatStringsSep "\n"
-              [ lispMakeExtension (readFile lispMake) ]);
+              [ lispMakeExtension (readFile lispMakeCore) ]);
 
           lispMake =
-            if withExtension then lispExtendedMake
-            else lispMake;
+            if withExtension then lispMakeExtended
+            else lispMakeCore;
 
         in
         stdenv.mkDerivation {
