@@ -6,8 +6,8 @@
       url = path:./KLambda;
       flake = false;
     };
-    BootstrapShen = {
-      url = path:./BootstrapShen;
+    ShenCoreBootstrap = {
+      url = path:./ShenCoreBootstrap;
       flake = false;
     };
     ShenCore = {
@@ -45,7 +45,7 @@
     , bootstrapKLambda
     , LispCore
     , LispExtendedPrimitives
-    , BootstrapShen
+    , ShenCoreBootstrap
     , ShenCore
     , ShenExtended
     , ShenCoreTests
@@ -146,7 +146,7 @@
         { src
         , withBootstrap ? false
         , version ? kor.mkImplicitVersion src
-        , shenMakeKLambda ? (BootstrapShen + /makeKLambda.shen)
+        , shenMakeKLambda ? (ShenCoreBootstrap + /makeKLambda.shen)
         }:
         let
           askiExecutable =
