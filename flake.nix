@@ -26,12 +26,12 @@
       url = path:./LispCorePrimitives;
       flake = false;
     };
-    LispExtended = {
-      url = path:./LispExtended;
+    LispExtendedPrimitives = {
+      url = path:./LispExtendedPrimitives;
       flake = false;
     };
-    ShenTests = {
-      url = path:./ShenTests;
+    ShenCoreTests = {
+      url = path:./ShenCoreTests;
       flake = false;
     };
     AskiCore = {
@@ -44,11 +44,11 @@
     { self
     , bootstrapKLambda
     , LispCore
-    , LispExtended
+    , LispExtendedPrimitives
     , BootstrapShen
     , ShenCore
     , ShenExtended
-    , ShenTests
+    , ShenCoreTests
     , AskiCore
     , ...
     }@inputs:
@@ -78,25 +78,25 @@
       mkMkAski = { kor, stdenv, sbcl, writeText }:
         { src
         , version ? kor.mkImplicitVersion src
-        , lispCorePrimitives ? (LispCore + /primitives.lsp)
-        , lispExtendedPrimitives ? (LispExtended + /primitives.lsp)
-        , LispCoreMake ? (LispCore + /make.lsp)
+        , corePrimitives ? (LispCore + /primitives.lsp)
+        , extendedPrimitives ? (LispExtendedPrimitives + /primitives.lsp)
+        , lispMake ? (LispCore + /make.lsp)
         , withExtension ? true
         , lispBackend ? (LispCore + /backend.lsp)
-        , shenTests ? ShenTests
+        , shenCoreTests ? inputs.ShenCoreTests
         , shenMake ? (ShenExtended + /make.shen)
         , withShenMake ? false
         }:
         let
           lispAllPrimitives = writeText "allPrimitives.lsp"
             (concatStringsSep "\n" [
-              (readFile lispCorePrimitives)
-              (readFile lispExtendedPrimitives)
+              (readFile corePrimitives)
+              (readFile extendedPrimitives)
             ]);
 
           lispPrimitives =
             if withExtension
-            then lispAllPrimitives else lispCorePrimitives;
+            then lispAllPrimitives else corePrimitives;
 
           lispMakeExtension = ''
             (LOAD "${sbcl}/lib/sbcl/contrib/uiop.fasl")
@@ -104,11 +104,11 @@
 
           lispExtendedMake = writeText "make.lsp"
             (builtins.concatStringsSep "\n"
-              [ lispMakeExtension (readFile LispCoreMake) ]);
+              [ lispMakeExtension (readFile lispMake) ]);
 
           lispMake =
             if withExtension then lispExtendedMake
-            else LispCoreMake;
+            else lispMake;
 
         in
         stdenv.mkDerivation {
@@ -130,7 +130,7 @@
           dontStrip = true; # (blockedBy staticLinking)
           doCheck = true;
           checkPhase = ''
-            echo '(cd ${shenTests}) (load "runme.shen")' |
+            echo '(cd ${shenCoreTests}) (load "runme.shen")' |
             ./aski
           '';
         };
