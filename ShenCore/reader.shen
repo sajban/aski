@@ -588,4 +588,4 @@
                                   (output "~A might not like ~A argument~A~%"
                                           F N (if (= N 1) "" "s"))
                                   skip)
-                    Verdict))                    )
+                    Verdict)))

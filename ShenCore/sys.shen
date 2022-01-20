@@ -488,4 +488,4 @@
    F 0 -> (do (set *special* (remove F (value *special*))) (set *extraspecial* (remove F (value *extraspecial*))) F)
    F 1 -> (do (set *special* (adjoin F (value *special*))) (set *extraspecial* (remove F (value *extraspecial*))) F)
    F 2 -> (do (set *special* (remove F (value *special*))) (set *extraspecial* (adjoin F (value *extraspecial*))) F)
-   F _ -> (error "specialise requires values of 0, 1 or 2~%")) )
+   F _ -> (error "specialise requires values of 0, 1 or 2~%")))

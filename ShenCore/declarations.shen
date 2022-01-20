@@ -138,4 +138,4 @@
                                 [printF | (/. X (printF X))]
                                 | LambdaEntries])))
 
- (build-lambda-table (external shen))                                    )
+ (build-lambda-table (external shen)))

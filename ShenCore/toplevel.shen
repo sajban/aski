@@ -100,4 +100,4 @@
    _ _ [] -> skip
    N S [S* | History] -> (do (if (string-prefix? S S*) (output "~A. ~A~%" N S*) skip)
                              (recursive-string-match (+ N 1) S History))
-   _ _ _ -> (simple-error "implementation error in shen.recursive-string-match"))   )
+   _ _ _ -> (simple-error "implementation error in shen.recursive-string-match")))

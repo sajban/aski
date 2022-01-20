@@ -128,4 +128,4 @@
      -> (@s "c#16;fune" (arg->str (gensym (intern "x")) a) "c#17;"))
 
  (define list?
-   X -> (or (empty? X) (cons? X)))              )
+   X -> (or (empty? X) (cons? X))))

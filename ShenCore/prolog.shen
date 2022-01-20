@@ -467,4 +467,4 @@
  (define occurs-check
    + -> (set *occurs* true)
      - -> (set *occurs* false)
-   _ -> (error "occurs-check expects a + or a -.~%"))                                  )
+   _ -> (error "occurs-check expects a + or a -.~%")))

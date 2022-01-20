@@ -194,4 +194,4 @@
 
  (define undefmacro
    F -> (do (set *macros* (remove (assoc F (value *macros*)) (value *macros*)))
-            F)) )
+            F)))
