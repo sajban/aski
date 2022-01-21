@@ -81,7 +81,6 @@
         , corePrimitives ? (LispCore + /primitives.lsp)
         , extendedPrimitives ? (LispExtendedPrimitives + /primitives.lsp)
         , lispMakeCore ? (LispCore + /make.lsp)
-        , withExtension ? true
         , lispBackend ? (LispCore + /backend.lsp)
         , shenCoreTests ? inputs.ShenCoreTests
         , shenMake ? (ShenExtended + /make.shen)
@@ -94,9 +93,7 @@
               (readFile extendedPrimitives)
             ]);
 
-          lispPrimitives =
-            if withExtension
-            then lispAllPrimitives else corePrimitives;
+          lispPrimitives = thenlispAllPrimitives;
 
           lispMakeExtension = ''
             (LOAD "${sbcl}/lib/sbcl/contrib/uiop.fasl")
@@ -106,9 +103,7 @@
             (builtins.concatStringsSep "\n"
               [ lispMakeExtension (readFile lispMakeCore) ]);
 
-          lispMake =
-            if withExtension then lispMakeExtended
-            else lispMakeCore;
+          lispMake = lispMakeExtended;
 
         in
         stdenv.mkDerivation {
@@ -189,10 +184,7 @@
         bootstrap = {
           src = bootstrapKLambda;
           lamdy = { mkAski, src }:
-            mkAski {
-              inherit src;
-              withExtension = false;
-            };
+            mkAski { inherit src; };
         };
 
         mkKLambda = {

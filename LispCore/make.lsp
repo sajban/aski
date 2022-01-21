@@ -51,4 +51,4 @@
 (SAVE-LISP-AND-DIE "aski"
 		   :EXECUTABLE T
 		   :SAVE-RUNTIME-OPTIONS T
-		   :TOPLEVEL 'shen.main)
+		   :TOPLEVEL 'aski.main)

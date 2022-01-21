@@ -1,7 +1,7 @@
-(package shen []
+(package aski []
 
  (define main
-     -> (let Args (launcherArguments)
+     -> (let Args (posix-argv)
              RunResult (run Args)
            (handleResult RunResult)))
 
