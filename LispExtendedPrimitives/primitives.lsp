@@ -9,7 +9,7 @@
 (DEFUN cl.exit (code)
   (SB-EXT:EXIT :CODE code))
 
-(DEFUN cl.directoryiles (Path)
+(DEFUN cl.directory-files (Path)
        (UIOP:DIRECTORY-FILES Path))
 
 (DEFUN cl.ensure-directories-exist (Path)
