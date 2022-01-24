@@ -14,6 +14,10 @@
       url = path:./ShenCore;
       flake = false;
     };
+    ShenExtendedBootstrap = {
+      url = path:./ShenExtendedBootstrap;
+      flake = false;
+    };
     ShenExtended = {
       url = path:./ShenExtended;
       flake = false;
@@ -47,6 +51,7 @@
     , LispExtendedPrimitives
     , ShenCoreBootstrap
     , ShenCore
+    , ShenExtendedBootstrap
     , ShenExtended
     , ShenCoreTests
     , AskiCore
@@ -83,17 +88,13 @@
         , lispMakeCore ? (LispCore + /make.lsp)
         , lispBackend ? (LispCore + /backend.lsp)
         , shenCoreTests ? inputs.ShenCoreTests
-        , shenMake ? (ShenExtended + /make.shen)
-        , withShenMake ? false
         }:
         let
-          lispAllPrimitives = writeText "allPrimitives.lsp"
+          lispPrimitives = writeText "allPrimitives.lsp"
             (concatStringsSep "\n" [
               (readFile corePrimitives)
               (readFile extendedPrimitives)
             ]);
-
-          lispPrimitives = thenlispAllPrimitives;
 
           lispMakeExtension = ''
             (LOAD "${sbcl}/lib/sbcl/contrib/uiop.fasl")
@@ -139,9 +140,11 @@
 
       mkMkKLambda = { kor, stdenv, aski }:
         { src
+        , extendedSrc
         , withBootstrap ? false
         , version ? kor.mkImplicitVersion src
         , shenMakeKLambda ? (ShenCoreBootstrap + /makeKLambda.shen)
+        , shenMakeExtendedKLambda ? (ShenExtendedBootstrap + /makeKLambda.shen)
         }:
         let
           askiExecutable =
@@ -153,8 +156,12 @@
           pname = "klambda";
           inherit version src;
           buildInputs = [ askiExecutable ];
+          patchPhase = ''
+            cp ${extendedSrc}/*.shen ./
+          '';
           buildPhase = ''
             aski ${shenMakeKLambda}
+            aski ${shenMakeExtendedKLambda}
           '';
           installPhase = ''
             mkdir $out
@@ -197,6 +204,7 @@
           lamdy = { mkKLambda, src }:
             mkKLambda {
               inherit src;
+              extendedSrc = ShenExtended;
               version = currentVersion;
               withBootstrap = true;
             };

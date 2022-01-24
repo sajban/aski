@@ -1,0 +1,140 @@
+{
+  "nodes": {
+    "AskiCore": {
+      "flake": false,
+      "locked": {
+        "narHash": "sha256-ZLyzoJbXHpV/z9rYycbCSVZvdi8yCoHUXz2P9ALVZ0I=",
+        "path": "./AskiCore",
+        "type": "path"
+      },
+      "original": {
+        "path": "./AskiCore",
+        "type": "path"
+      }
+    },
+    "LispCore": {
+      "flake": false,
+      "locked": {
+        "narHash": "sha256-+naZjbJVOy934/vG5/IQqNRO46CsTWN5siHZF4lV1QQ=",
+        "path": "./LispCore",
+        "type": "path"
+      },
+      "original": {
+        "path": "./LispCore",
+        "type": "path"
+      }
+    },
+    "LispCorePrimitives": {
+      "flake": false,
+      "locked": {
+        "narHash": "sha256-buCczYUZ0biupPUUYgc36PsVVetu9NbsuLWnYJJgR9M=",
+        "path": "./LispCorePrimitives",
+        "type": "path"
+      },
+      "original": {
+        "path": "./LispCorePrimitives",
+        "type": "path"
+      }
+    },
+    "LispExtendedPrimitives": {
+      "flake": false,
+      "locked": {
+        "narHash": "sha256-2m8AQvk1UwXq7gQhLDBGbj6PYYTSpO/rLqcYQktpmwA=",
+        "path": "./LispExtendedPrimitives",
+        "type": "path"
+      },
+      "original": {
+        "path": "./LispExtendedPrimitives",
+        "type": "path"
+      }
+    },
+    "ShenCore": {
+      "flake": false,
+      "locked": {
+        "narHash": "sha256-ZE0RsSkrVFV6wsUDydKKwj8C+rGRPSkTWk/L0/yV0e8=",
+        "path": "./ShenCore",
+        "type": "path"
+      },
+      "original": {
+        "path": "./ShenCore",
+        "type": "path"
+      }
+    },
+    "ShenCoreBootstrap": {
+      "flake": false,
+      "locked": {
+        "narHash": "sha256-P6muYTBiw/wwqN5HE3BqBvkbYDpjZ/HRyZ7ME2TbCOY=",
+        "path": "./ShenCoreBootstrap",
+        "type": "path"
+      },
+      "original": {
+        "path": "./ShenCoreBootstrap",
+        "type": "path"
+      }
+    },
+    "ShenCoreTests": {
+      "flake": false,
+      "locked": {
+        "narHash": "sha256-EbT8PfeWjkLIutpLuDQyLO9FiQyqP5i0BsvCo06zl7I=",
+        "path": "./ShenCoreTests",
+        "type": "path"
+      },
+      "original": {
+        "path": "./ShenCoreTests",
+        "type": "path"
+      }
+    },
+    "ShenExtended": {
+      "flake": false,
+      "locked": {
+        "narHash": "sha256-L2F8dWUJQ3XxhiwrUZ2iffSEFkE8kab5mnaA9onY6wM=",
+        "path": "./ShenExtended",
+        "type": "path"
+      },
+      "original": {
+        "path": "./ShenExtended",
+        "type": "path"
+      }
+    },
+    "ShenExtendedBootstrap": {
+      "flake": false,
+      "locked": {
+        "narHash": "sha256-53aOf+qwIohFFXQ7H+OHNgM06sNIwUumL/rdM8Qku/g=",
+        "path": "./ShenExtendedBootstrap",
+        "type": "path"
+      },
+      "original": {
+        "path": "./ShenExtendedBootstrap",
+        "type": "path"
+      }
+    },
+    "bootstrapKLambda": {
+      "flake": false,
+      "locked": {
+        "narHash": "sha256-4RG8MmAyxz3qWt+FYThaEQHp8LMwAlxsnDAOw3cClYE=",
+        "path": "./KLambda",
+        "type": "path"
+      },
+      "original": {
+        "path": "./KLambda",
+        "type": "path"
+      }
+    },
+    "root": {
+      "inputs": {
+        "AskiCore": "AskiCore",
+        "LispCore": "LispCore",
+        "LispCorePrimitives": "LispCorePrimitives",
+        "LispExtendedPrimitives": "LispExtendedPrimitives",
+        "ShenCore": "ShenCore",
+        "ShenCoreBootstrap": "ShenCoreBootstrap",
+        "ShenCoreTests": "ShenCoreTests",
+        "ShenExtended": "ShenExtended",
+        "ShenExtendedBootstrap": "ShenExtendedBootstrap",
+        "bootstrapKLambda": "bootstrapKLambda"
+      }
+    }
+  },
+  "root": "root",
+  "version": 7
+}

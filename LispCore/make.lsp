@@ -44,7 +44,9 @@
               "KLambda/reader.kl" "KLambda/declarations.kl"
               "KLambda/toplevel.kl" "KLambda/macros.kl" "KLambda/load.kl"
               "KLambda/prolog.kl" "KLambda/sequent.kl" "KLambda/track.kl"
-              "KLambda/t-star.kl" "KLambda/yacc.kl" "KLambda/types.kl"))
+              "KLambda/t-star.kl" "KLambda/yacc.kl" "KLambda/types.kl"
+	      "KLambda/main.kl" "KLambda/extended-declarations.kl"
+	      "KLambda/extended-types.kl"))
 
 (MAPC 'FMAKUNBOUND '(boot readsource objectcode))
 
