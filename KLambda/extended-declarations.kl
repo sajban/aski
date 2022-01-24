@@ -1,2 +1,0 @@
-(shen.initialise-arity-table (cons aski.cl.compile-lisp-file (cons 1 (cons aski.cl.delete-file (cons 1 (cons aski.cl.load-lisp (cons 1 (cons aski.cl.posix-argv (cons 0 (cons aski.cl.exit (cons 1 (cons aski.cl.directory-files (cons 1 (cons aski.cl.ensure-directories-exist (cons 1 (cons aski.cl.copy-file (cons 2 (cons aski.cl.runrogram (cons 1 ())))))))))))))))))))
-

@@ -2,8 +2,8 @@
   description = "aski";
 
   inputs = {
-    bootstrapKLambda = {
-      url = path:./KLambda;
+    KLambdaBootstrap = {
+      url = path:./KLambdaBootstrap;
       flake = false;
     };
     ShenCoreBootstrap = {
@@ -46,8 +46,9 @@
 
   outputs =
     { self
-    , bootstrapKLambda
+    , KLambdaBootstrap
     , LispCore
+    , LispCorePrimitives
     , LispExtendedPrimitives
     , ShenCoreBootstrap
     , ShenCore
@@ -55,7 +56,6 @@
     , ShenExtended
     , ShenCoreTests
     , AskiCore
-    , ...
     }@inputs:
     let
       inherit (builtins) concatStringsSep readFile mapAttrs;
@@ -83,7 +83,7 @@
       mkMkAski = { kor, stdenv, sbcl, writeText }:
         { src
         , version ? kor.mkImplicitVersion src
-        , corePrimitives ? (LispCore + /primitives.lsp)
+        , corePrimitives ? (LispCorePrimitives + /primitives.lsp)
         , extendedPrimitives ? (LispExtendedPrimitives + /primitives.lsp)
         , lispMakeCore ? (LispCore + /make.lsp)
         , lispBackend ? (LispCore + /backend.lsp)
@@ -189,7 +189,7 @@
         };
 
         bootstrap = {
-          src = bootstrapKLambda;
+          src = KLambdaBootstrap;
           lamdy = { mkAski, src }:
             mkAski { inherit src; };
         };

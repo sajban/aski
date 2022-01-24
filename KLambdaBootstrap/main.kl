@@ -1,4 +1,4 @@
-(defun aski.main () (let Args (aski.posix-argv) (let RunResult (run Args) (aski.handleResult RunResult))))
+(defun aski.main () (let Args (aski.cl.posix-argv) (let RunResult (run Args) (aski.handleResult RunResult))))
 
 (defun run (V1041) (cond ((and (cons? V1041) (= () (tl V1041))) (trap-error (aski.runFromStdInput) (lambda Y1039 (aski.emitErrorResult Y1039)))) ((and (cons? V1041) (and (cons? (tl V1041)) (= () (tl (tl V1041))))) (trap-error (aski.runScript (hd (tl V1041))) (lambda Y1040 (aski.emitErrorResult Y1040)))) (true (shen.f-error run))))
 

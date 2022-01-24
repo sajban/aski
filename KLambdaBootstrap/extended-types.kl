@@ -1,0 +1,18 @@
+(declare cl.compile-lisp-file (cons string (cons --> (cons string ()))))
+
+(declare cl.delete-file (cons string (cons --> (cons boolean ()))))
+
+(declare cl.load-lisp (cons string (cons --> (cons boolean ()))))
+
+(declare cl.posix-argv (cons --> (cons (cons list (cons A ())) ())))
+
+(declare cl.exit (cons cl.int (cons --> ())))
+
+(declare cl.directory-files (cons string (cons --> (cons (cons list (cons string ())) ()))))
+
+(declare cl.ensure-directories-exist (cons string (cons --> (cons boolean ()))))
+
+(declare cl.copy-file (cons string (cons --> (cons (cons string (cons --> (cons boolean ()))) ()))))
+
+(declare cl.run-program (cons (cons list (cons string ())) (cons --> (cons (cons Output (cons --> (cons (cons ErrorOutput (cons --> (cons ExitCode ()))) ()))) ()))))
+

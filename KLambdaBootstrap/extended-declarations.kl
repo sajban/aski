@@ -1,0 +1,2 @@
+(shen.initialise-arity-table (cons cl.compile-lisp-file (cons 1 (cons cl.delete-file (cons 1 (cons cl.load-lisp (cons 1 (cons cl.posix-argv (cons 0 (cons cl.exit (cons 1 (cons cl.directory-files (cons 1 (cons cl.ensure-directories-exist (cons 1 (cons cl.copy-file (cons 2 (cons cl.runrogram (cons 1 ())))))))))))))))))))
+
