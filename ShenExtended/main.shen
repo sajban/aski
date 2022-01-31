@@ -28,5 +28,5 @@
  (define handleResult
    [error Error] -> (do
                      (pr (error-to-string Error) (stoutput))
-                     (shen.exit 1))
-   [success] -> (shen.exit 0)))
+                     (cl.exit 1))
+   [success] -> (cl.exit 0)))

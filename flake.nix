@@ -42,6 +42,10 @@
       url = path:./AskiCore;
       flake = false;
     };
+    AskiFleik = {
+      url = path:./AskiFleik;
+      flake = false;
+    };
   };
 
   outputs =
@@ -56,6 +60,7 @@
     , ShenExtended
     , ShenCoreTests
     , AskiCore
+    , AskiFleik
     }@inputs:
     let
       inherit (builtins) concatStringsSep readFile mapAttrs;
@@ -132,15 +137,15 @@
         };
 
       mkMkAskiNext = { deryveicyn }:
-        { src, version, askiUniks ? (AskiCore + /uniks.aski) }:
+        { src, version, askiFleik ? (AskiFleik + /fleik.aski) }:
         deryveicyn {
           name = "aski";
-          inherit src version askiUniks;
+          inherit src version askiFleik;
         };
 
       mkMkKLambda = { kor, stdenv, aski }:
         { src
-        , extendedSrc
+        , extendedSrc ? ShenExtended
         , withBootstrap ? false
         , version ? kor.mkImplicitVersion src
         , shenMakeKLambda ? (ShenCoreBootstrap + /makeKLambda.shen)
