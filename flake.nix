@@ -14,12 +14,20 @@
       url = path:./ShenCore;
       flake = false;
     };
+    ShenCoreTests = {
+      url = path:./ShenCoreTests;
+      flake = false;
+    };
     ShenExtendedBootstrap = {
       url = path:./ShenExtendedBootstrap;
       flake = false;
     };
     ShenExtended = {
       url = path:./ShenExtended;
+      flake = false;
+    };
+    ShenExtendedTests = {
+      url = path:./ShenExtendedTests;
       flake = false;
     };
     LispCore = {
@@ -32,10 +40,6 @@
     };
     LispExtendedPrimitives = {
       url = path:./LispExtendedPrimitives;
-      flake = false;
-    };
-    ShenCoreTests = {
-      url = path:./ShenCoreTests;
       flake = false;
     };
     AskiCore = {
@@ -58,9 +62,9 @@
     , ShenCore
     , ShenExtendedBootstrap
     , ShenExtended
-    , ShenCoreTests
     , AskiCore
     , AskiFleik
+    , ...
     }@inputs:
     let
       inherit (builtins) concatStringsSep readFile mapAttrs;
@@ -92,7 +96,8 @@
         , extendedPrimitives ? (LispExtendedPrimitives + /primitives.lsp)
         , lispMakeCore ? (LispCore + /make.lsp)
         , lispBackend ? (LispCore + /backend.lsp)
-        , shenCoreTests ? inputs.ShenCoreTests
+        , ShenCoreTests ? inputs.ShenCoreTests
+        , ShenExtendedTests ? inputs.ShenExtendedTests
         }:
         let
           lispPrimitives = writeText "allPrimitives.lsp"
@@ -110,6 +115,14 @@
               [ lispMakeExtension (readFile lispMakeCore) ]);
 
           lispMake = lispMakeExtended;
+
+          ShenLoadTests = writeText "make.lsp"
+            ''
+              (cd ${ShenCoreTests})
+              (load "runme.shen")
+              (cd ${ShenExtendedTests})
+              (load "init.shen")
+            '';
 
         in
         stdenv.mkDerivation {
@@ -131,8 +144,7 @@
           dontStrip = true; # (blockedBy staticLinking)
           doCheck = true;
           checkPhase = ''
-            echo '(cd ${shenCoreTests}) (load "runme.shen")' |
-            ./aski
+            ./aski ${ShenLoadTests}
           '';
         };
 

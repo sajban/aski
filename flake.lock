@@ -132,6 +132,18 @@
         "type": "path"
       }
     },
+    "ShenExtendedTests": {
+      "flake": false,
+      "locked": {
+        "narHash": "sha256-5KNlGNmML58qOL6LqsMW87hu16Z4gqfOIz7VW+qC0Co=",
+        "path": "./ShenExtendedTests",
+        "type": "path"
+      },
+      "original": {
+        "path": "./ShenExtendedTests",
+        "type": "path"
+      }
+    },
     "root": {
       "inputs": {
         "AskiCore": "AskiCore",
@@ -144,7 +156,8 @@
         "ShenCoreBootstrap": "ShenCoreBootstrap",
         "ShenCoreTests": "ShenCoreTests",
         "ShenExtended": "ShenExtended",
-        "ShenExtendedBootstrap": "ShenExtendedBootstrap"
+        "ShenExtendedBootstrap": "ShenExtendedBootstrap",
+        "ShenExtendedTests": "ShenExtendedTests"
       }
     }
   },
