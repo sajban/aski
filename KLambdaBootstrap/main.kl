@@ -1,12 +1,12 @@
-(defun aski.main () (let Args (aski.cl.posix-argv) (let RunResult (run Args) (aski.handleResult RunResult))))
+(defun aski.main () (let Args (cl.posix-argv) (let RunResult (run Args) (aski.handleResult RunResult))))
 
-(defun run (V1041) (cond ((and (cons? V1041) (= () (tl V1041))) (trap-error (aski.runFromStdInput) (lambda Y1039 (aski.emitErrorResult Y1039)))) ((and (cons? V1041) (and (cons? (tl V1041)) (= () (tl (tl V1041))))) (trap-error (aski.runScript (hd (tl V1041))) (lambda Y1040 (aski.emitErrorResult Y1040)))) (true (shen.f-error run))))
+(defun run (V1160) (cond ((and (cons? V1160) (= () (tl V1160))) (trap-error (aski.runFromStdInput) (lambda Y1158 (aski.emitErrorResult Y1158)))) ((and (cons? V1160) (and (cons? (tl V1160)) (= () (tl (tl V1160))))) (trap-error (aski.runScript (hd (tl V1160))) (lambda Y1159 (aski.emitErrorResult Y1159)))) (true (shen.f-error run))))
 
 (defun aski.runFromStdInput () (do (eval (stinput)) (cons aski.success ())))
 
-(defun aski.emitErrorResult (V1042) (cons error (cons V1042 ())))
+(defun aski.emitErrorResult (V1161) (cons error (cons V1161 ())))
 
-(defun aski.runScript (V1043) (let Code (read-file V1043) (let Evaluation (map (lambda X (eval-kl ((fn aski.shen->kl) X))) Code) (cons aski.success ()))))
+(defun aski.runScript (V1162) (let Code (read-file V1162) (let Evaluation (map (lambda X (eval-kl (shen.shen->kl X))) Code) (cons aski.success ()))))
 
-(defun aski.handleResult (V1044) (cond ((and (cons? V1044) (and (= error (hd V1044)) (and (cons? (tl V1044)) (= () (tl (tl V1044)))))) (do (pr (error-to-string (hd (tl V1044))) (stoutput)) (shen.exit 1))) ((and (cons? V1044) (and (= aski.success (hd V1044)) (= () (tl V1044)))) (shen.exit 0)) (true (shen.f-error aski.handleResult))))
+(defun aski.handleResult (V1163) (cond ((and (cons? V1163) (and (= error (hd V1163)) (and (cons? (tl V1163)) (= () (tl (tl V1163)))))) (do (pr (error-to-string (hd (tl V1163))) (stoutput)) (cl.exit 1))) ((and (cons? V1163) (and (= aski.success (hd V1163)) (= () (tl V1163)))) (cl.exit 0)) (true (shen.f-error aski.handleResult))))
 

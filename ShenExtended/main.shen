@@ -22,7 +22,7 @@
 
  (define runScript
    File -> (let Code (read-file File)
-                Evaluation (map (/. X (eval-kl (shen->kl X))) Code)
+                Evaluation (map (/. X (eval-kl (shen.shen->kl X))) Code)
               [success]))
 
  (define handleResult

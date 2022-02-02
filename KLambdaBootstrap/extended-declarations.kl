@@ -1,2 +1,8 @@
-(shen.initialise-arity-table (cons cl.compile-lisp-file (cons 1 (cons cl.delete-file (cons 1 (cons cl.load-lisp (cons 1 (cons cl.posix-argv (cons 0 (cons cl.exit (cons 1 (cons cl.directory-files (cons 1 (cons cl.ensure-directories-exist (cons 1 (cons cl.copy-file (cons 2 (cons cl.runrogram (cons 1 ())))))))))))))))))))
+(defun cl.symbolsFromArityTable (V1152) (cl.symbolsFromArityTable-h V1152 ()))
+
+(defun cl.symbolsFromArityTable-h (V1155 V1156) (cond ((= () V1155) V1156) ((and (cons? V1155) (cons? (tl V1155))) (let Symbols (adjoin (hd V1155) V1156) (cl.symbolsFromArityTable-h (tl (tl V1155)) Symbols))) ((= () V1156) (simple-error "implementation error in symbolsFromArityTable")) (true (shen.f-error cl.symbolsFromArityTable-h))))
+
+(defun cl.add-shen-primitives (V1157) (let Symbols (cl.symbolsFromArityTable V1157) (let PreviousExternals (trap-error (get cl shen.external-symbols (value *property-vector*)) (lambda E ())) (do (shen.initialise-arity-table V1157) (do (put cl shen.external-symbols (adjoin Symbols PreviousExternals) (value *property-vector*)) (map (lambda Y1150 (lambda Y1151 (update-lambda-table Y1150 Y1151))) Symbols))))))
+
+(cl.add-shen-primitives (cons cl.compile-lisp-file (cons 1 (cons cl.delete-file (cons 1 (cons cl.load-lisp (cons 1 (cons cl.posix-argv (cons 0 (cons cl.exit (cons 1 (cons cl.directory-files (cons 1 (cons cl.ensure-directories-exist (cons 1 (cons cl.copy-file (cons 2 (cons cl.runrogram (cons 1 ())))))))))))))))))))
 
