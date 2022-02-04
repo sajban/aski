@@ -1,4 +1,4 @@
-(package shen []
+(package cl [cl]
 
  (define symbolsFromArityTable
    ArityTable -> (symbolsFromArityTable-h ArityTable []))
@@ -17,8 +17,8 @@
 				(get shen external-symbols)
 				(/. E []))
 	   (do
-	    (initialise-arity-table ArityTable)
-	    (put shen external-symbols (adjoin Symbols PreviousExternals))
+	    (shen.initialise-arity-table ArityTable)
+	    (put cl shen.external-symbols (adjoin Symbols PreviousExternals))
 	    (map (fn update-lambda-table) Symbols))))
 
  (add-primitives

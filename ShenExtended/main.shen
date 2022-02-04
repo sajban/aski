@@ -1,4 +1,4 @@
-(package aski []
+(package aski [cl.posix-argv cl.exit]
 
  (define main
      -> (let Args (cl.posix-argv)
