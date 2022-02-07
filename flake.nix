@@ -6,6 +6,10 @@
       url = path:./KLambdaBootstrap;
       flake = false;
     };
+    ShenAski = {
+      url = path:./ShenAski;
+      flake = false;
+    };
     ShenCoreBootstrap = {
       url = path:./ShenCoreBootstrap;
       flake = false;
@@ -46,8 +50,8 @@
       url = path:./AskiCore;
       flake = false;
     };
-    AskiFleik = {
-      url = path:./AskiFleik;
+    AskiCoreFleik = {
+      url = path:./AskiCoreFleik;
       flake = false;
     };
   };
@@ -58,12 +62,13 @@
     , LispCore
     , LispCorePrimitives
     , LispExtendedPrimitives
+    , ShenAski
     , ShenCoreBootstrap
     , ShenCore
     , ShenExtendedBootstrap
     , ShenExtended
     , AskiCore
-    , AskiFleik
+    , AskiCoreFleik
     , ...
     }@inputs:
     let
@@ -149,10 +154,14 @@
         };
 
       mkMkAskiNext = { deryveicyn }:
-        { src, version, askiFleik ? (AskiFleik + /fleik.aski) }:
+        { src, version, askiFleik ? (AskiCoreFleik + /fleik.aski) }:
         deryveicyn {
           name = "aski";
           inherit src version askiFleik;
+          nixInputs = {
+            inherit sbcl ShenAski ShenCoreTests ShenExtendedTests
+              LispCorePrimitives LispExtendedPrimitives;
+          };
         };
 
       mkMkKLambda = { kor, stdenv, aski }:
