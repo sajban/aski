@@ -1,4 +1,4 @@
-(package cl []
+(package shen []
 
  (declare compile-lisp-file [string --> string])
  (declare delete-file [string --> boolean])

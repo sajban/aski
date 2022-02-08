@@ -1,4 +1,7 @@
-(package cl [cl]
+(package shen [compile-lisp-file delete-file load-lisp posix-argv
+			       exit directory-files
+			       ensure-directories-exist copy-file
+			       run-program]
 
  (define symbolsFromArityTable
    ArityTable -> (symbolsFromArityTable-h ArityTable []))
@@ -7,7 +10,7 @@
    [] Symbols -> Symbols
    [Symbol Arity | Table] PreviousSymbols
      -> (let Symbols (adjoin Symbol PreviousSymbols)
-	  (symbolsFromArityTable-h Table Symbols))
+	   (symbolsFromArityTable-h Table Symbols))
    _ [] -> (simple-error "implementation error in symbolsFromArityTable"))
  
  (define add-primitives
@@ -18,10 +21,9 @@
 				(/. E []))
 	   (do
 	    (shen.initialise-arity-table ArityTable)
-	    (put cl shen.external-symbols (adjoin Symbols PreviousExternals))
 	    (map (fn update-lambda-table) Symbols))))
 
  (add-primitives
   [compile-lisp-file 1 delete-file 1 load-lisp 1 posix-argv 0 exit 1
-			directory-files 1 ensure-directories-exist 1 copy-file 2
-			runrogram 1]))
+		     directory-files 1 ensure-directories-exist 1 copy-file 2
+		     run-program 1]))

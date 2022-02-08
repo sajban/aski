@@ -65,8 +65,10 @@
     , ShenAski
     , ShenCoreBootstrap
     , ShenCore
+    , ShenCoreTests
     , ShenExtendedBootstrap
     , ShenExtended
+    , ShenExtendedTests
     , AskiCore
     , AskiCoreFleik
     , ...
@@ -153,7 +155,7 @@
           '';
         };
 
-      mkMkAskiNext = { deryveicyn }:
+      mkMkAskiNext = { deryveicyn, sbcl }:
         { src, version, askiFleik ? (AskiCoreFleik + /fleik.aski) }:
         deryveicyn {
           name = "aski";

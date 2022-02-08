@@ -1,7 +1,7 @@
-(package aski [cl.posix-argv cl.exit]
+(package aski []
 
  (define main
-     -> (let Args (cl.posix-argv)
+     -> (let Args (posix-argv)
              RunResult (run Args)
            (handleResult RunResult)))
 
@@ -28,5 +28,5 @@
  (define handleResult
    [error Error] -> (do
                      (pr (error-to-string Error) (stoutput))
-                     (cl.exit 1))
-   [success] -> (cl.exit 0)))
+                     (exit 1))
+   [success] -> (exit 0)))
