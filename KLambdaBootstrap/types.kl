@@ -1,13 +1,13 @@
-(defun declare (V4670 V4671) (let Rectify (shen.rectify-type V4671) (let Variant? (((((lambda V4632 (lambda L4633 (lambda K4634 (lambda C4635 (do (shen.incinfs) (shen.variancy (receive (shen.deref V4670 V4632)) (receive (shen.deref Rectify V4632)) V4632 L4633 K4634 C4635)))))) (shen.reset-prolog-vector)) (@v true (@v 0 (vector 0)))) 0) (freeze true)) (let Abstraction (eval-kl (shen.prolog-abstraction V4671)) (let UpDate (set shen.*sigf* (shen.assoc-> V4670 Abstraction (value shen.*sigf*))) V4670)))))
+(defun declare (V4724 V4725) (let Rectify (shen.rectify-type V4725) (let Variant? (((((lambda V4686 (lambda L4687 (lambda K4688 (lambda C4689 (do (shen.incinfs) (shen.variancy (receive (shen.deref V4724 V4686)) (receive (shen.deref Rectify V4686)) V4686 L4687 K4688 C4689)))))) (shen.reset-prolog-vector)) (@v true (@v 0 (vector 0)))) 0) (freeze true)) (let Abstraction (eval-kl (shen.prolog-abstraction V4725)) (let UpDate (set shen.*sigf* (shen.assoc-> V4724 Abstraction (value shen.*sigf*))) V4724)))))
 
-(defun shen.variancy (V4672 V4673 V4674 V4675 V4676 V4677) (if (shen.unlocked? V4675) (let A (shen.newpv V4674) (shen.gc V4674 (do (shen.incinfs) (shen.system-S-h V4672 A () V4674 V4675 V4676 (freeze (shen.variants? V4672 A V4673 V4674 V4675 V4676 V4677)))))) false))
+(defun shen.variancy (V4726 V4727 V4728 V4729 V4730 V4731) (if (shen.unlocked? V4729) (let A (shen.newpv V4728) (shen.gc V4728 (do (shen.incinfs) (shen.system-S-h V4726 A () V4728 V4729 V4730 (freeze (shen.variants? V4726 A V4727 V4728 V4729 V4730 V4731)))))) false))
 
-(defun shen.variants? (V4678 V4679 V4680 V4681 V4682 V4683 V4684) (let K4645 (+ V4683 1) (let C4650 (if (shen.unlocked? V4682) (let Tm4651 (shen.lazyderef V4679 V4681) (let GoTo4652 (freeze (do (shen.incinfs) (shen.cut V4681 V4682 K4645 V4684))) (if (= Tm4651 symbol) (thaw GoTo4652) (if (shen.pvar? Tm4651) (shen.bind! Tm4651 symbol V4681 GoTo4652) false)))) false) (if (= C4650 false) (let C4653 (if (shen.unlocked? V4682) (do (shen.incinfs) (is! V4679 V4680 V4681 V4682 K4645 V4684)) false) (if (= C4653 false) (let C4654 (if (shen.unlocked? V4682) (let Warning (shen.newpv V4681) (shen.gc V4681 (do (shen.incinfs) (is Warning (pr (cn "warning: changing the type of " (shen.app (shen.deref V4678 V4681) " may create errors
-" shen.a)) (stoutput)) V4681 V4682 K4645 V4684)))) false) (if (= C4654 false) (shen.unlock V4682 K4645) C4654)) C4653)) C4650))))
+(defun shen.variants? (V4732 V4733 V4734 V4735 V4736 V4737 V4738) (let K4699 (+ V4737 1) (let C4704 (if (shen.unlocked? V4736) (let Tm4705 (shen.lazyderef V4733 V4735) (let GoTo4706 (freeze (do (shen.incinfs) (shen.cut V4735 V4736 K4699 V4738))) (if (= Tm4705 symbol) (thaw GoTo4706) (if (shen.pvar? Tm4705) (shen.bind! Tm4705 symbol V4735 GoTo4706) false)))) false) (if (= C4704 false) (let C4707 (if (shen.unlocked? V4736) (do (shen.incinfs) (is! V4733 V4734 V4735 V4736 K4699 V4738)) false) (if (= C4707 false) (let C4708 (if (shen.unlocked? V4736) (let Warning (shen.newpv V4735) (shen.gc V4735 (do (shen.incinfs) (is Warning (pr (cn "warning: changing the type of " (shen.app (shen.deref V4732 V4735) " may create errors
+" shen.a)) (stoutput)) V4735 V4736 K4699 V4738)))) false) (if (= C4708 false) (shen.unlock V4736 K4699) C4708)) C4707)) C4704))))
 
-(defun shen.prolog-abstraction (V4685) (let Bindings (gensym (protect B)) (let Lock (gensym (protect L)) (let Key (gensym (protect Key)) (let Continuation (gensym (protect C)) (let V (gensym (protect V)) (let Vs (shen.extract-vars V4685) (cons lambda (cons V (cons (cons lambda (cons Bindings (cons (cons lambda (cons Lock (cons (cons lambda (cons Key (cons (cons lambda (cons Continuation (cons (shen.stpart Vs (cons is! (cons V (cons (shen.rcons_form V4685) (cons Bindings (cons Lock (cons Key (cons Continuation ()))))))) Bindings) ()))) ()))) ()))) ()))) ()))))))))))
+(defun shen.prolog-abstraction (V4739) (let Bindings (gensym B) (let Lock (gensym L) (let Key (gensym Key) (let Continuation (gensym C) (let V (gensym V) (let Vs (shen.extract-vars V4739) (cons lambda (cons V (cons (cons lambda (cons Bindings (cons (cons lambda (cons Lock (cons (cons lambda (cons Key (cons (cons lambda (cons Continuation (cons (shen.stpart Vs (cons is! (cons V (cons (shen.rcons_form V4739) (cons Bindings (cons Lock (cons Key (cons Continuation ()))))))) Bindings) ()))) ()))) ()))) ()))) ()))))))))))
 
-(defun shen.demod (V4686) V4686)
+(defun shen.demod (V4740) V4740)
 
 (declare abort (cons --> (cons A ())))
 
@@ -310,3 +310,4 @@
 (declare * (cons number (cons --> (cons (cons number (cons --> (cons number ()))) ()))))
 
 (declare == (cons A (cons --> (cons (cons B (cons --> (cons boolean ()))) ()))))
+
