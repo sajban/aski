@@ -87,7 +87,7 @@
     "ShenCore": {
       "flake": false,
       "locked": {
-        "narHash": "sha256-HHSo6ssta8BAzxP+v4vzV/sdweB6D/780WKNvqcK0wY=",
+        "narHash": "sha256-NNMP9dh4BTdPx4W8mnhTCDvCoVYUXnhDFFUHDYU/z1M=",
         "path": "./ShenCore",
         "type": "path"
       },
