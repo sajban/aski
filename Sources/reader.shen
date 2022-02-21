@@ -138,9 +138,9 @@
   
 (define store-arity
   F N -> (let ArityF (arity F)
-              (cases (sysfunc? F)  (error "~A is a system function~%" F) 
-                     (= ArityF -1) (execute-store-arity F N)
+              (cases (= ArityF -1) (execute-store-arity F N)
                      (= ArityF N)  skip
+                     (sysfunc? F)  (error "~A is a system function~%" F) 
                      true (do (output "changing the arity of ~A may cause errors~%" F)
                               (execute-store-arity F N)))))
                               
