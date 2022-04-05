@@ -78,6 +78,7 @@
 
       shenSourcesSha256s = {
         "S31.03" = "0637jvbyyxf8yfa6z446f90lb9sh92qrx3i7hc25pj4chk5q2pwx";
+        "S32" = "02pg5zxn48i1qwlnh4idfjh7mj4wz1msrdh7818xb43rncdh0vis";
         "stLib1.0" = "0dbism9m6rjpbbjy0zgcwk9gkapax1104srqxkpw84kvn2cnrbay";
       };
 
