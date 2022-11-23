@@ -3,6 +3,7 @@
     "AskiCore": {
       "flake": false,
       "locked": {
+        "lastModified": 1,
         "narHash": "sha256-ZLyzoJbXHpV/z9rYycbCSVZvdi8yCoHUXz2P9ALVZ0I=",
         "path": "./AskiCore",
         "type": "path"
@@ -15,6 +16,7 @@
     "AskiCoreFleik": {
       "flake": false,
       "locked": {
+        "lastModified": 1,
         "narHash": "sha256-qOqDilUpjJVRGHaJqTIO2Y5eJaIQuGE0frZC9ZcZyNc=",
         "path": "./AskiCoreFleik",
         "type": "path"
@@ -24,9 +26,49 @@
         "type": "path"
       }
     },
+    "AskiCoreNiks": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1,
+        "narHash": "sha256-w0lewzQZ2ClGmTuarwscVi4qjIDL2mGXJ7aIP5QkLQU=",
+        "path": "./AskiCoreNiks",
+        "type": "path"
+      },
+      "original": {
+        "path": "./AskiCoreNiks",
+        "type": "path"
+      }
+    },
+    "AskiDefaultBuilder": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1,
+        "narHash": "sha256-dMQ4qUC2aFkZrM88zvxdiu/tdOOakETGTVOuL9/N2yI=",
+        "path": "./AskiDefaultBuilder",
+        "type": "path"
+      },
+      "original": {
+        "path": "./AskiDefaultBuilder",
+        "type": "path"
+      }
+    },
+    "AskiNiks": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1,
+        "narHash": "sha256-Zpw5k0lpafxdko9NdW8Yyakghx1ijMnG1wS3FjyQZuM=",
+        "path": "./AskiNiks",
+        "type": "path"
+      },
+      "original": {
+        "path": "./AskiNiks",
+        "type": "path"
+      }
+    },
     "KLambdaBootstrap": {
       "flake": false,
       "locked": {
+        "lastModified": 1,
         "narHash": "sha256-rusyGaan8eDqlEc7zmxMdYDoO4OKoPllC5juxP2qnko=",
         "path": "./KLambdaBootstrap",
         "type": "path"
@@ -39,6 +81,7 @@
     "LispCore": {
       "flake": false,
       "locked": {
+        "lastModified": 1,
         "narHash": "sha256-aebErJ/qYHaE/cdnWPwj3Kx3isN94bYKA8Jo//NJ42A=",
         "path": "./LispCore",
         "type": "path"
@@ -51,6 +94,7 @@
     "LispCorePrimitives": {
       "flake": false,
       "locked": {
+        "lastModified": 1,
         "narHash": "sha256-buCczYUZ0biupPUUYgc36PsVVetu9NbsuLWnYJJgR9M=",
         "path": "./LispCorePrimitives",
         "type": "path"
@@ -63,6 +107,7 @@
     "LispExtendedPrimitives": {
       "flake": false,
       "locked": {
+        "lastModified": 1,
         "narHash": "sha256-NsHHXvXLTUtkAOTSuiIqf0Li4XG9cJSgWxmb8izi3Nc=",
         "path": "./LispExtendedPrimitives",
         "type": "path"
@@ -75,7 +120,8 @@
     "ShenAski": {
       "flake": false,
       "locked": {
-        "narHash": "sha256-C3Pgicf/bhS5jcZRQtRb77q6cjJzWM8xXQRazAxdD4o=",
+        "lastModified": 1,
+        "narHash": "sha256-Icqb70Hiz6P0lypMk1pFi9tc2u6vj6fV/kaqZeXLkYk=",
         "path": "./ShenAski",
         "type": "path"
       },
@@ -87,6 +133,7 @@
     "ShenCore": {
       "flake": false,
       "locked": {
+        "lastModified": 1,
         "narHash": "sha256-NNMP9dh4BTdPx4W8mnhTCDvCoVYUXnhDFFUHDYU/z1M=",
         "path": "./ShenCore",
         "type": "path"
@@ -99,6 +146,7 @@
     "ShenCoreBootstrap": {
       "flake": false,
       "locked": {
+        "lastModified": 1,
         "narHash": "sha256-P6muYTBiw/wwqN5HE3BqBvkbYDpjZ/HRyZ7ME2TbCOY=",
         "path": "./ShenCoreBootstrap",
         "type": "path"
@@ -111,6 +159,7 @@
     "ShenCoreTests": {
       "flake": false,
       "locked": {
+        "lastModified": 1,
         "narHash": "sha256-EbT8PfeWjkLIutpLuDQyLO9FiQyqP5i0BsvCo06zl7I=",
         "path": "./ShenCoreTests",
         "type": "path"
@@ -123,6 +172,7 @@
     "ShenExtended": {
       "flake": false,
       "locked": {
+        "lastModified": 1,
         "narHash": "sha256-0XpXnv70oWPwZ6F1qV5SjPjef7BfrvsnY1ED5kfmpUU=",
         "path": "./ShenExtended",
         "type": "path"
@@ -135,7 +185,8 @@
     "ShenExtendedBootstrap": {
       "flake": false,
       "locked": {
-        "narHash": "sha256-IRH8tDEZ5SR1VN6s6kgLoAbLiO5NfvrbFcgOgqyXFSs=",
+        "lastModified": 1,
+        "narHash": "sha256-s9GegX9q30AGIohEH4Q04wXzJi8krBiqE4XSgjs6UeY=",
         "path": "./ShenExtendedBootstrap",
         "type": "path"
       },
@@ -147,6 +198,7 @@
     "ShenExtendedTests": {
       "flake": false,
       "locked": {
+        "lastModified": 1,
         "narHash": "sha256-9b0mPdxzcmyjfuMOVvjwd7/JCeikF8OGqDiKL4KApk0=",
         "path": "./ShenExtendedTests",
         "type": "path"
@@ -160,6 +212,9 @@
       "inputs": {
         "AskiCore": "AskiCore",
         "AskiCoreFleik": "AskiCoreFleik",
+        "AskiCoreNiks": "AskiCoreNiks",
+        "AskiDefaultBuilder": "AskiDefaultBuilder",
+        "AskiNiks": "AskiNiks",
         "KLambdaBootstrap": "KLambdaBootstrap",
         "LispCore": "LispCore",
         "LispCorePrimitives": "LispCorePrimitives",

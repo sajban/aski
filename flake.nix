@@ -2,58 +2,22 @@
   description = "aski";
 
   inputs = {
-    KLambdaBootstrap = {
-      url = path:./KLambdaBootstrap;
-      flake = false;
-    };
-    ShenAski = {
-      url = path:./ShenAski;
-      flake = false;
-    };
-    ShenCoreBootstrap = {
-      url = path:./ShenCoreBootstrap;
-      flake = false;
-    };
-    ShenCore = {
-      url = path:./ShenCore;
-      flake = false;
-    };
-    ShenCoreTests = {
-      url = path:./ShenCoreTests;
-      flake = false;
-    };
-    ShenExtendedBootstrap = {
-      url = path:./ShenExtendedBootstrap;
-      flake = false;
-    };
-    ShenExtended = {
-      url = path:./ShenExtended;
-      flake = false;
-    };
-    ShenExtendedTests = {
-      url = path:./ShenExtendedTests;
-      flake = false;
-    };
-    LispCore = {
-      url = path:./LispCore;
-      flake = false;
-    };
-    LispCorePrimitives = {
-      url = path:./LispCorePrimitives;
-      flake = false;
-    };
-    LispExtendedPrimitives = {
-      url = path:./LispExtendedPrimitives;
-      flake = false;
-    };
-    AskiCore = {
-      url = path:./AskiCore;
-      flake = false;
-    };
-    AskiCoreFleik = {
-      url = path:./AskiCoreFleik;
-      flake = false;
-    };
+    KLambdaBootstrap = { url = path:./KLambdaBootstrap; flake = false; };
+    ShenAski = { url = path:./ShenAski; flake = false; };
+    ShenCoreBootstrap = { url = path:./ShenCoreBootstrap; flake = false; };
+    ShenCore = { url = path:./ShenCore; flake = false; };
+    ShenCoreTests = { url = path:./ShenCoreTests; flake = false; };
+    ShenExtendedBootstrap = { url = path:./ShenExtendedBootstrap; flake = false; };
+    ShenExtended = { url = path:./ShenExtended; flake = false; };
+    ShenExtendedTests = { url = path:./ShenExtendedTests; flake = false; };
+    LispCore = { url = path:./LispCore; flake = false; };
+    LispCorePrimitives = { url = path:./LispCorePrimitives; flake = false; };
+    LispExtendedPrimitives = { url = path:./LispExtendedPrimitives; flake = false; };
+    AskiCore = { url = path:./AskiCore; flake = false; };
+    AskiCoreFleik = { url = path:./AskiCoreFleik; flake = false; };
+    AskiCoreNiks = { url = path:./AskiCoreNiks; flake = false; };
+    AskiNiks = { url = path:./AskiNiks; flake = false; };
+    AskiDefaultBuilder = { url = path:./AskiDefaultBuilder; flake = false; };
   };
 
   outputs =
