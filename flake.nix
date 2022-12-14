@@ -15,9 +15,6 @@
     LispExtendedPrimitives = { url = path:./LispExtendedPrimitives; flake = false; };
     AskiCore = { url = path:./AskiCore; flake = false; };
     AskiCoreFleik = { url = path:./AskiCoreFleik; flake = false; };
-    AskiCoreNiks = { url = path:./AskiCoreNiks; flake = false; };
-    AskiNiks = { url = path:./AskiNiks; flake = false; };
-    AskiDefaultBuilder = { url = path:./AskiDefaultBuilder; flake = false; };
   };
 
   outputs =
@@ -136,6 +133,7 @@
         , extendedSrc ? ShenExtended
         , withBootstrap ? false
         , version ? kor.mkImplicitVersion src
+        , shenAskiSrc ? ShenAski
         , shenMakeKLambda ? (ShenCoreBootstrap + /makeKLambda.shen)
         , shenMakeExtendedKLambda ? (ShenExtendedBootstrap + /makeKLambda.shen)
         }:
@@ -151,6 +149,7 @@
           buildInputs = [ askiExecutable ];
           patchPhase = ''
             cp ${extendedSrc}/*.shen ./
+            cp ${shenAskiSrc}/*.shen ./
           '';
           buildPhase = ''
             aski ${shenMakeKLambda}
@@ -177,7 +176,7 @@
         };
 
         mkAskiNext = {
-          modz = [ "pkdjz" ];
+          modz = [ "pkgs" "pkdjz" ];
           lamdy = mkMkAskiNext;
         };
 

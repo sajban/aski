@@ -26,45 +26,6 @@
         "type": "path"
       }
     },
-    "AskiCoreNiks": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1,
-        "narHash": "sha256-w0lewzQZ2ClGmTuarwscVi4qjIDL2mGXJ7aIP5QkLQU=",
-        "path": "./AskiCoreNiks",
-        "type": "path"
-      },
-      "original": {
-        "path": "./AskiCoreNiks",
-        "type": "path"
-      }
-    },
-    "AskiDefaultBuilder": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1,
-        "narHash": "sha256-dMQ4qUC2aFkZrM88zvxdiu/tdOOakETGTVOuL9/N2yI=",
-        "path": "./AskiDefaultBuilder",
-        "type": "path"
-      },
-      "original": {
-        "path": "./AskiDefaultBuilder",
-        "type": "path"
-      }
-    },
-    "AskiNiks": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1,
-        "narHash": "sha256-Zpw5k0lpafxdko9NdW8Yyakghx1ijMnG1wS3FjyQZuM=",
-        "path": "./AskiNiks",
-        "type": "path"
-      },
-      "original": {
-        "path": "./AskiNiks",
-        "type": "path"
-      }
-    },
     "KLambdaBootstrap": {
       "flake": false,
       "locked": {
@@ -212,9 +173,6 @@
       "inputs": {
         "AskiCore": "AskiCore",
         "AskiCoreFleik": "AskiCoreFleik",
-        "AskiCoreNiks": "AskiCoreNiks",
-        "AskiDefaultBuilder": "AskiDefaultBuilder",
-        "AskiNiks": "AskiNiks",
         "KLambdaBootstrap": "KLambdaBootstrap",
         "LispCore": "LispCore",
         "LispCorePrimitives": "LispCorePrimitives",
