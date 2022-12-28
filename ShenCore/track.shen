@@ -85,7 +85,8 @@
 
  (define untrack
    F -> (do (set *tracking* (remove F (value *tracking*)))
-            (trap-error (eval (ps F)) (/. E F))))
+            (trap-error (eval (ps F)) (/. E F))
+            F))
 
  (define remove
    X Y -> (remove-h X Y []))
@@ -134,4 +135,6 @@
    F -> (trap-error (get F profile) (/. E 0)))
 
  (define put-profile
-   F Time -> (put F profile Time)))
+   F Time -> (put F profile Time))
+
+ )

@@ -10,7 +10,7 @@
   Class SuperClasses ClassDef
     -> (let Attributes (map fst ClassDef)
             Inherited (put-prop Class attributes
-				(append Attributes (collect-attributes SuperClasses)))
+                                (append Attributes (collect-attributes SuperClasses)))
             Types (record-attribute-types Class ClassDef)
             Assoc (map (/. Attribute [Attribute | fail!]) Inherited)
             ClassDef [[class | Class] | Assoc]

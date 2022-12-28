@@ -71,7 +71,7 @@
  (define arg->str
    F _ -> "..."                   where  (= F (fail))
    L Mode -> (list->str L Mode)    where (list? L)
-   S Mode -> (str->str S Mode)    where (string? S)
+   S Mode -> (str->str S Mode)            where (string? S)
    V Mode -> (vector->str V Mode)  where (absvector? V)
    At _ -> (atom->str At))
 
@@ -98,18 +98,27 @@
                     (vector? V) (@s "<" (iter-vector V 1 Mode (maxseq)) ">")
                     true (@s "<<" (iter-vector V 0 Mode (maxseq)) ">>")))
 
+ (set *empty-absvector* (absvector 0))
+
+ (define empty-absvector?
+   X -> (= X (value *empty-absvector*)))
+
  (define print-vector?
-   P -> (let Zero (<-address P 0)
-           (cases (= Zero tuple) true
-                  (= Zero pvar) true
-                  (not (number? Zero)) (fbound? Zero)
-                  true false)))
+   P -> (and (not (empty-absvector? P))
+             (let First (<-address P 0)
+                (or (= First tuple)
+                    (= First pvar)
+                    (= First dictionary)
+                    (and (not (number? First)) (fbound? First))))))
 
  (define fbound?
    F -> (not (= (arity F) -1)))
 
  (define tuple
    P -> (make-string "(@p ~S ~S)" (<-address P 1) (<-address P 2)))
+
+ (define dictionary
+   D -> (make-string "(dict ...)"))
 
  (define iter-vector
    _ _ _ 0 -> "... etc"
@@ -128,4 +137,6 @@
      -> (@s "c#16;fune" (arg->str (gensym (intern "x")) a) "c#17;"))
 
  (define list?
-   X -> (or (empty? X) (cons? X))))
+   X -> (or (empty? X) (cons? X)))
+
+ )

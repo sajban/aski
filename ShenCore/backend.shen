@@ -1,4 +1,5 @@
-(package cl [u! member consp t car cdr t consp stringp numberp null equal eq quote funcall eql]
+(package cl [u! member consp t car cdr t consp stringp
+                numberp null equal eq quote funcall eql equalp cl.ABSEQUAL]
 
  (define kl-to-lisp
    KL -> (kl-to-lisp-h [] KL))
@@ -70,9 +71,9 @@
    [equal? X [fail]]               -> [(u! eq) X [fail]]
    [equal? S X]                    -> [(u! equal) S X]  where (string? S)
    [equal? X S]                    -> [(u! equal) X S]  where (string? S)
-   [equal? N X]                    -> [(u! eql) N X]  where (number? N)
-   [equal? X N]                    -> [(u! eql) X N]  where (number? N)
-   [equal? X Y]                    -> [shen.ABSEQUAL X Y]
+   [equal? N X]                    -> [(u! equalp) N X]  where (number? N)
+   [equal? X N]                    -> [(u! equalp) X N]  where (number? N)
+   [equal? X Y]                    -> [cl.ABSEQUAL X Y]
    [greater? X Y]                  -> [> X Y]
    [greater-than-or-equal-to? X Y] -> [>= X Y]
    [less? X Y]                     -> [< X Y]
@@ -98,7 +99,8 @@
    >= -> greater-than-or-equal-to?
    <= -> less-than-or-equal-to?
    + -> add
-   - -> subtract
+     - -> subtract
    / -> divide
    * -> multiply
-   F -> F))
+   F -> F)
+ )

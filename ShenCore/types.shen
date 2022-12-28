@@ -1,4 +1,4 @@
-(package shen []
+(package shen [dynamic]
 
  (define declare
    F A -> (let Rectify (rectify-type A)
@@ -27,7 +27,8 @@
                                                                  (stpart Vs [is! V (rcons_form A) Bindings Lock Key Continuation] Bindings)]]]]]))
 
  (define demod
-   X -> X)
+   X -> (let F (value *demodulation-function*)
+           (F X)))
 
  (declare abort [--> A])
  (declare absvector? [A --> boolean])
@@ -49,6 +50,7 @@
  (declare destroy [[A --> B] --> symbol])
  (declare difference [[list A] --> [[list A] --> [list A]]])
  (declare do [A --> [B --> B]])
+ (declare dynamic [symbol --> [list symbol]])
  (declare <e> [[str [list A] B] --> [str [list A] [list C]]])
  (declare <!> [[str [list A] B] --> [str [list A] [list A]]])
  (declare <end> [[str [list A] B] --> [str [list A] B]])
@@ -143,6 +145,7 @@
  (declare spy [symbol --> boolean])
  (declare step [symbol --> boolean])
  (declare stinput [--> [stream in]])
+ (declare sterror [--> [stream out]])
  (declare stoutput [--> [stream out]])
  (declare string? [A --> boolean])
  (declare str [A --> string])
@@ -179,4 +182,6 @@
  (declare / [number --> [number --> number]])
  (declare - [number --> [number --> number]])
  (declare * [number --> [number --> number]])
- (declare == [A --> [B --> boolean]]))
+ (declare == [A --> [B --> boolean]])
+
+ )

@@ -1,6 +1,6 @@
 (package shen []
 
- (define shen.shen
+ (define shen.repl
      -> (do (credits)
             (loop)))
 
@@ -8,11 +8,14 @@
      -> (do (initialise_environment)
             (prompt)
             (trap-error (read-evaluate-print)
-                        (/. E (do (pr (error-to-string E) (stoutput)) (nl 0))))
+                        (/. E (toplevel-display-exception E)))
             (loop)))
 
+ (define toplevel-display-exception
+   E -> (do (pr (error-to-string E) (stoutput)) (nl 0)))
+
  (define credits
-     -> (do (output "~%Shen, www.shenlanguage.org, copyright (C) 2010-2021, Mark Tarver~%")
+     -> (do (output "~%Shen, www.shenlanguage.org, copyright (C) 2010-2022, Mark Tarver~%")
             (output "version: S~A, language: ~A, platform: ~A ~A~%"
                     (value *version*) (value *language*) (value *implementation*) (value *release*))
             (output "port ~A, ported by ~A~%~%" (value *port*) (value *porters*))))
@@ -47,24 +50,28 @@
    _ _ X -> X)
 
  (define update-history
-     -> (set *history* [(it) | (value *history*)]))
+     -> (set *history* [(trim-it (it)) | (value *history*)]))
+
+ (define trim-it
+   (@s S Ss) -> (trim-it Ss)   where (whitespace? (string->n S))
+   Ss -> Ss)
 
  (define evaluate-lineread
-   [X] ["!!" S | History] TC -> (let Y (read-from-string S)
+   [_] ["!!" S | History] TC -> (let Y (read-from-string S)
                                      NewHistory (set *history* [S S | History])
                                      Print (output "~A~%" S)
                                    (evaluate-lineread Y NewHistory TC))
-   [X] [(@s "%" S) | History] TC -> (let Read (hd (read-from-string S))
+   [_] [(@s "%" S) | History] TC -> (let Read (hd (read-from-string S))
                                          Peek (peek-history Read S History)
                                          NewHistory (set *history* History)
                                        (abort))
-   [X] [(@s "!" S) | History] TC -> (let Read (hd (read-from-string S))
+   [_] [(@s "!" S) | History] TC -> (let Read (hd (read-from-string S))
                                          Match (use-history Read S History)
                                          Print (output "~A~%" Match)
                                          Y (read-from-string Match)
                                          NewHistory (set *history* [Match | History])
                                        (evaluate-lineread Y NewHistory TC))
-   [X] [(@s "%" S) | History] TC -> (let Read (hd (read-from-string S))
+   [_] [(@s "%" S) | History] TC -> (let Read (hd (read-from-string S))
                                          Peek (peek-history Read S History)
                                          NewHistory (set *history* History)
                                        (abort))
@@ -100,4 +107,6 @@
    _ _ [] -> skip
    N S [S* | History] -> (do (if (string-prefix? S S*) (output "~A. ~A~%" N S*) skip)
                              (recursive-string-match (+ N 1) S History))
-   _ _ _ -> (simple-error "implementation error in shen.recursive-string-match")))
+   _ _ _ -> (simple-error "implementation error in shen.recursive-string-match"))
+
+ )

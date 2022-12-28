@@ -1,4 +1,4 @@
-(package shen [shen]
+(package shen [shen foreign]
 
  (define read-file
    File -> (let Bytelist (read-file-as-bytelist File)
@@ -136,9 +136,9 @@
      F N -> (let ArityF (arity F)
                (cases (= ArityF -1) (execute-store-arity F N)
                       (= ArityF N)  skip
-                      true (do
-			    (output "changing the arity of ~A may cause errors~%" F)
-                            (execute-store-arity F N)))))
+                      (sysfunc? F)  (error "~A is a system function~%" F)
+                      true (do (output "changing the arity of ~A may cause errors~%" F)
+                               (execute-store-arity F N)))))
 
    (define execute-store-arity
      F 0 -> (put F arity 0)
@@ -146,11 +146,9 @@
                 (update-lambdatable F N)))
 
    (define update-lambdatable
-     F N -> (let LambdaTable (value *lambdatable*)
-                 Lambda (eval-kl (lambda-function [F] N))
-                 Insert (assoc-> F Lambda LambdaTable)
-                 Reset (set *lambdatable* Insert)
-               Reset))
+     F N -> (let Lambda (eval-kl (lambda-function [F] N))
+                 Insert (set-lambda-form-entry [F | Lambda])
+               N))
 
    (define lambda-function
      _ 0 -> skip
@@ -422,8 +420,8 @@
    32 -> true
    13 -> true
    10 -> true
-   9 -> true
-   _ -> false)
+   9  -> true
+   _  -> false)
 
  (define unpackage&macroexpand
    [] -> []
@@ -442,7 +440,16 @@
    [package P External | S-exprs] -> (let External! (eval External)
                                           Package (package-symbols (str P) External! S-exprs)
                                           RecordExternal (record-external P External!)
+                                          RecordInternal (record-internal P External! S-exprs)
                                         Package))
+
+ (define record-internal
+   P External! S-exprs -> (put P internal-symbols (internal-symbols (str P) External! S-exprs)))
+
+ (define internal-symbols
+   P External [X | Y] -> (union (internal-symbols P External X) (internal-symbols P External Y))
+   P External X       -> [(intern-in-package P X)]  where (internal? X P External)
+   _ _ _ -> [])
 
  (define record-external
    P E* -> (let External (trap-error (get P external-symbols) (/. E []))
@@ -477,10 +484,11 @@
  (define internal-to-P?
    "" (@s "." _)        -> true
    (@s S Ss) (@s S Ss*) -> (internal-to-P? Ss Ss*)
-   _ _                   -> false)
+   _ _                  -> false)
 
  (define process-applications
    X Types -> X  where (element? X Types)
+   [cond | X] Types -> [cond | (process-cond-clauses X Types)]
    [F | X] Types -> (special-case F [F | X] Types)   where (non-application? F)
    [F | X] Types -> (process-application (map (/. Y (process-applications Y Types)) [F | X]) Types)
    X _ -> X)
@@ -505,6 +513,11 @@
                                       _ [F | X] Types               -> [F | (map (/. Y (process-applications Y Types)) X)]  where (special? F)
                                       _ [F | X] Types               -> [F | X]   where (extraspecial? F))
 
+            (define process-cond-clauses
+              []                   _     -> []
+              [[Test Body] | Rest] Types -> [[(process-applications Test Types) (process-applications Body Types)]
+                                             | (process-cond-clauses Rest Types)])
+
             (define process-after-type
               F [} | X] Types -> [} | (map (/. Y (process-applications Y Types)) X)]
    F [X | Y] Types -> [X | (process-after-type F Y Types)]
@@ -515,14 +528,22 @@
                          N (length X)
                        (cases (element? [F | X] Types)           [F | X]
                               (shen-call? F)                     [F | X]
+                              (foreign? [F | X])                 (unpack-foreign [F | X])
                               (fn-call? [F | X])                 (fn-call [F | X])
                               (zero-place? [F | X])              [F | X]
                               (undefined-f? F ArityF)            (simple-curry [[fn F] | X])
                               (variable? F)                      (simple-curry [F | X])
                               (application? F)                   (simple-curry [F | X])
                               (partial-application*? F ArityF N) (lambda-function [F | X] (- ArityF N))
-                              (overapplication? F ArityF N)      (simple-curry [F | X])
+                              (overapplication? F ArityF N)      (simple-curry [[fn F] | X])
                               true                               [F | X])))
+
+ (define unpack-foreign
+   [[foreign F] | X] -> [F | X])
+
+ (define foreign?
+   [[foreign F] | X] -> true
+   _ -> false)
 
  (define zero-place?
    [F] -> true
@@ -537,6 +558,7 @@
 
  (define application?
    [protect _] -> false
+   [foreign _] -> false
    F -> (cons? F))
 
  (define undefined-f?
@@ -555,10 +577,9 @@
    F -> (fn F))
 
  (define fn
-   F -> (let LookUp (assoc F (value *lambdatable*))
-           (if (empty? LookUp)
-               (error  "fn: ~A is undefined~%" F)
-               (tl LookUp))))
+   F -> (trap-error
+         (get F lambda-form)
+         (/. E (error  "fn: ~A is undefined~%" F))))
 
  (define fn-call?
    [fn F] -> true
@@ -589,4 +610,6 @@
                                   (output "~A might not like ~A argument~A~%"
                                           F N (if (= N 1) "" "s"))
                                   skip)
-                    Verdict)))
+                    Verdict))
+
+ )

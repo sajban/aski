@@ -42,7 +42,9 @@
    Vector Counter N X -> (fillvector (address-> Vector Counter X) (+ 1 Counter) N X))
 
  (define vector?
-   X -> (and (absvector? X) (trap-error (>= (<-address X 0) 0) (/. E false))))
+   X -> (and (absvector? X)
+             (let X (trap-error (<-address X 0) (/. E -1))
+                (and (number? X) (>= X 0)))))
 
  (define vector->
    Vector N X -> (if (= N 0)
@@ -110,7 +112,8 @@
    X -> (<-address X 2))
 
  (define tuple?
-   X -> (trap-error (and (absvector? X) (= tuple (<-address X 0))) (/. E false)))
+   X -> (and (absvector? X)
+             (= tuple (trap-error (<-address X 0) (/. E not-tuple)))))
 
  (define append
    [] X -> X
@@ -147,13 +150,24 @@
  (define tlv-help
    OldVector N N NewVector -> (copyfromvector OldVector NewVector N (- N 1))
    OldVector N Limit NewVector -> (tlv-help OldVector (+ N 1) Limit
-                                            (copyfromvector OldVector NewVector N (- N 1))))
+                                            (copyfromvector
+                                             OldVector NewVector N (- N 1))))
 
  (define assoc
    _ [] -> []
    X [[X | Y] | _] -> [X | Y]
    X [_ | Y] -> (assoc X Y)
    _ _ -> (error "attempt to search a non-list with assoc~%"))
+
+ (define assoc-set
+   Key Value [] -> [[Key | Value]]
+   Key Value [[Key | _] | Rest] -> [[Key | Value] | Rest]
+   Key Value [Z | Rest] -> [Z | (assoc-set Key Value Rest)])
+
+ (define assoc-rm
+   Key [] -> []
+   Key [[Key | _] | Rest] -> Rest
+   Key [Z | Rest] -> [Z | (assoc-rm Key Rest)])
 
  (define boolean?
    true -> true
@@ -190,37 +204,25 @@
    F _ X -> (fix-help F X (F X)))
 
  (define put
-   X Pointer Y Vector -> (let N (hash X (limit Vector))
-                              Entry (trap-error (<-vector Vector N) (/. E []))
-                              Change (vector-> Vector N (change-pointer-value X Pointer Y Entry))
-                            Y))
+   X Pointer Y Dict -> (let Curr (trap-error (<-dict Dict X) (/. E []))
+                            Added (assoc-set Pointer Y Curr)
+                            Update (dict-> Dict X Added)
+                          Y))
 
  (define unput
-   X Pointer Vector -> (let N (hash X (limit Vector))
-                            Entry (trap-error (<-vector Vector N) (/. E []))
-                            Change (vector-> Vector N (remove-pointer X Pointer Entry))
-                          X))
-
- (define remove-pointer
-   X Pointer [] -> []
-   X Pointer [[[X Pointer] | _] | Entry] -> Entry
-   X Pointer [Z | Entry] -> [Z | (remove-pointer X Pointer Entry)]
-   _ _ _ -> (simple-error "implementation error in shen.remove-pointer"))
-
- (define change-pointer-value
-   X Pointer Y [] -> [[[X Pointer] | Y]]
-   X Pointer Y [[[X Pointer] | _] | Entry] -> [[[X Pointer] | Y] | Entry]
-   X Pointer Y [Z | Entry] -> [Z | (change-pointer-value X Pointer Y Entry)]
-   _ _ _ _ -> (simple-error "implementation error in shen.change-pointer-value"))
+   X Pointer Dict -> (let Curr (trap-error (<-dict Dict X) (/. E []))
+                          Removed (assoc-rm Pointer Curr)
+                          Update (dict-> Dict X Removed)
+                        X))
 
  (define get
-   X Pointer Vector -> (let N (hash X (limit Vector))
-                            Entry (trap-error (<-vector Vector N)
-                                              (/. E (error "~A has no attributes: ~S~%" X Pointer)))
-                            Result (assoc [X Pointer] Entry)
-                          (if (empty? Result)
-                              (error "attribute ~S not found for ~S~%" Pointer X)
-                              (tl Result))))
+   X Pointer Dict -> (let Entry (trap-error
+                                 (<-dict Dict X)
+                                 (/. E (error "~A has no attributes: ~S~%" X Pointer)))
+                          Result (assoc Pointer Entry)
+                        (if (empty? Result)
+                            (error "attribute ~S not found for ~S~%" Pointer X)
+                            (tl Result))))
 
  (define hash
    S Limit -> (let Hash (mod (hashkey S) Limit)
@@ -252,7 +254,8 @@
    N [] -> N
    N [M | Ms] -> (if (empty? Ms)
                      N
-                     (modh N Ms))   where (> M N)
+                     (modh N Ms))
+     where (> M N)
    N [M | Ms] -> (modh (- N M) [M | Ms])
    _ _ -> (simple-error "implementation error in shen.modh"))
 
@@ -320,6 +323,11 @@
 
  (define cd
    Path -> (set *home-directory* (if (= Path "") "" (make-string "~A/" Path))))
+
+ (define for-each
+   F [] -> true
+   F [X | Xs] -> (let Ignored (F X)
+                    (for-each F Xs)))
 
  (define map
    F X -> (map-h F X []))
@@ -395,6 +403,9 @@
  (define protect
    X -> X)
 
+ (define sterror
+     -> (value *sterror*))
+
  (define stoutput
      -> (value *stoutput*))
 
@@ -433,12 +444,6 @@
  (define package?
    null -> true
    Package -> (trap-error (do (external Package) true) (/. E false)))
-
- (define fn
-   F -> (let Assoc (assoc F (value *lambdatable*))
-           (if (empty? Assoc)
-               (error "~A has no lambda expansion~%" F)
-               (tl Assoc))))
 
  (define fail
      -> fail!)
@@ -480,12 +485,14 @@
 
  (define update-lambda-table
    F Arity -> (let AssertArity (put F arity Arity)
-                   LambdaEntry (shen.lambda-entry F)
-                   Update (set shen.*lambdatable* [LambdaEntry | (value shen.*lambdatable*)])
+                   LambdaEntry (lambda-entry F)
+                   Update (set-lambda-form-entry [F | LambdaEntry])
                  F))
 
  (define specialise
    F 0 -> (do (set *special* (remove F (value *special*))) (set *extraspecial* (remove F (value *extraspecial*))) F)
    F 1 -> (do (set *special* (adjoin F (value *special*))) (set *extraspecial* (remove F (value *extraspecial*))) F)
    F 2 -> (do (set *special* (remove F (value *special*))) (set *extraspecial* (adjoin F (value *extraspecial*))) F)
-   F _ -> (error "specialise requires values of 0, 1 or 2~%")))
+   F _ -> (error "specialise requires values of 0, 1 or 2~%"))
+
+ )

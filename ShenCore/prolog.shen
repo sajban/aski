@@ -1,20 +1,104 @@
-(package shen []
+(package shen [asserta assertz retract dynamic]
+
+ (define dynamic
+   Predicate -> (set *dynamic* [Predicate | (value *dynamic*)]))
 
  (define compile-prolog
    F Clauses -> (compile (/. X (<defprolog> X)) [F | Clauses]))
 
  (defcc <defprolog>
-   F <clauses> := (let Aritycheck (prolog-arity-check F <clauses>)
+   F <clauses> := (let Arity      (prolog-arity-check F <clauses>)
                        LeftLinear (map (/. X (linearise-clause X)) <clauses>)
-                     (horn-clause-procedure F LeftLinear));)
+                       Parameters (parameters Arity)
+                       Insert     (if (dynamic? F)
+                                      (append (clauseA F Parameters) LeftLinear (clauseZ F Parameters))
+                                      LeftLinear)
+                     (horn-clause-procedure F Insert));)
+
+ (define dynamic?
+   F -> (element? F (value *dynamic*)))
+
+ (define clauseA
+   F Head -> (let FA (concat F (protect A))
+                  Body  [[when [defined? FA]] [FA | Head]]
+                  Clause [Head Body]
+                [Clause]))
+
+ (define clauseZ
+   F Head -> (let FZ (concat F (protect Z))
+                  Body  [[when [defined? FZ]] [FZ | Head]]
+                  Clause [Head Body]
+                [Clause]))
+
+ (define defined?
+   F -> (not (= (arity F) -1)))
+
+ (defprolog asserta
+   P <-- (execute (asserta-h P P));)
+
+ (define asserta-h
+   [[F | X] <-- | Body] P -> (dynamically-assert [[F | X] <-- | Body] P)
+     where (not (defined? F))
+   P [[F | X] <-- | Body] -> (let FA (concat F (protect A))
+                                (if (defined? F)
+                                    (asserta-h P [[FA | X] <-- | Body])
+                                    (dynamically-assert P [[F | X] <-- | Body])))
+   P _ -> (error "~%non-clause ~R given to asserta~%" P))
+
+ (define dynamically-assert
+   P [[F | X] <-- | Body] -> (let MakeFDynamic    (dynamic F)
+                                  UnretractedF    (flag-unretracted F)
+                                  AssociateClause (put P procedure-name F)
+                                (eval [defprolog F |
+                                        (append X [<--] [[when [unretracted? F]]] Body)])))
+
+ (defprolog assertz
+   P <-- (execute (assertz-h P P));)
+
+ (defprolog execute
+   _ <--;)
+
+ (define assertz-h
+   [[F | X] <-- | Body] P -> (dynamically-assert [[F | X] <-- | Body] P)
+     where (not (defined? F))
+   P [[F | X] <-- | Body] -> (let FZ (concat F (protect Z))
+                                (if (defined? F)
+                                    (assertz-h P [[FZ | X] <-- | Body])
+                                    (dynamically-assert P [[F | X] <-- | Body])))
+   P _ -> (error "~%non-clause ~R given to assertz~%" P))
+
+ (define flag-unretracted
+   F -> (put F retracted false))
+
+ (define flag-retracted
+   F -> (put F retracted true))
+
+ (define unretracted?
+   F -> (trap-error (not (get F retracted)) (/. E true)))
+
+ (defprolog retract
+   P <-- (execute (retract-h P));)
+
+ (define retract-h
+   Clause -> (let F (trap-error (get Clause procedure-name) (/. E skip))
+                (if (= F skip)
+                    skip
+                    (flag-retracted F))))
+
+
+ (define prolog-arity-check
+   _ [[H B]] -> (length H)
+   F [[H B] | Clauses] -> (pac-h F (length H) Clauses))
+
+ (define pac-h
+   _ N [] -> N
+   F N [[H | _] | Clauses] -> (if (= N (length H))
+                                  (pac-h F N Clauses)
+                                  (error "arity error in prolog procedure ~A~%" F)))
 
  (defcc <clauses>
    <clause> <clauses> := [<clause> | <clauses>];
    <!> := (if (empty? <!>) [] (error "Prolog syntax error here:~% ~R~% ..." <!>));)
-
- (define prolog-arity-check
-   _ [_] -> skip
-   F [[H B] | Clauses] -> (pac-h F (length H) Clauses))
 
  (define linearise-clause
    [H B] -> (lch (linearise (@p H B))))
@@ -25,12 +109,6 @@
  (define lchh
    [where [= X Y] B] -> [[(if (value *occurs*) is! is) X Y] | (lchh B)]
    B -> B)
-
- (define pac-h
-   _ _ [] -> true
-   F N [[H | _] | Clauses] -> (if (= N (length H))
-                                  (pac-h F N Clauses)
-                                  (error "arity error in prolog procedure ~A~%" F)))
 
  (defcc <clause>
    <head> <-- <body> <sc> := [<head> <body>];)
@@ -155,10 +233,16 @@
  (define continue
    H B Bindings Lock Key Continuation
      -> (let HVs (extract-vars H)
-             BVs (extract-vars B)
+             BVs (extract-free-vars B)
              Free (difference BVs HVs)
              ContinuationCode [do [incinfs] (compile-body B Bindings Lock Key Continuation)]
            (stpart Free ContinuationCode Bindings)))
+
+ (define extract-free-vars
+   [lambda X Y] -> (remove X (extract-free-vars Y))
+   [X | Y] -> (union (extract-free-vars X) (extract-free-vars Y))
+   X -> [X]   where (variable? X)
+   _ -> [])
 
  (define compile-body
    [] _ _ _ Continuation -> [thaw Continuation]
@@ -198,15 +282,16 @@
 
  (define function-calls
    [cons X Y] Bindings -> [cons (function-calls X Bindings) (function-calls Y Bindings)]
-   [F | X] Bindings -> (deref-terms [F | X] Bindings)
+   [F | X] Bindings -> (deref-terms [F | X] Bindings [])
    X _ -> X)
 
  (define deref-terms
-   [0 X] _ ->  (if (variable? X) X (error "attempt to optimise a non-variable ~S~%" X))
-   [1 X] Bindings -> (if (variable? X) [lazyderef X Bindings] (error "attempt to optimise a non-variable ~S~%" X))
-   X Bindings -> [deref X Bindings]           where (variable? X)
-   [X | Y] Bindings -> (map (/. Z (deref-terms Z Bindings)) [X | Y])
-   X _ -> X)
+   [0 X] _ _ ->  (if (variable? X) X (error "attempt to optimise a non-variable ~S~%" X))
+   [1 X] Bindings LBound -> (if (variable? X) [lazyderef X Bindings] (error "attempt to optimise a non-variable ~S~%" X))
+   X Bindings LBound -> [deref X Bindings]           where (and (not (element? X LBound)) (variable? X))
+   [lambda X Y] Bindings LBound -> [lambda X (deref-terms Y Bindings [X | LBound])]
+   [X | Y] Bindings LBound -> (map (/. Z (deref-terms Z Bindings LBound)) [X | Y])
+   X _ _ -> X)
 
  (define compile-head
    _ [] [] Bindings Continuation                 -> Continuation
@@ -305,7 +390,8 @@
    X -> (= X _))
 
  (define pvar?
-   X -> (trap-error (and (absvector? X) (= (<-address X 0) pvar)) (/. E false)))
+   X -> (and (absvector? X)
+             (= (trap-error (<-address X 0) (/. E not-pvar)) pvar)))
 
  (define lazyderef
    X Bindings -> (if (pvar? X)
@@ -467,4 +553,6 @@
  (define occurs-check
    + -> (set *occurs* true)
      - -> (set *occurs* false)
-   _ -> (error "occurs-check expects a + or a -.~%")))
+   _ -> (error "occurs-check expects a + or a -.~%"))
+
+ )

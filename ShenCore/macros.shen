@@ -19,7 +19,7 @@
  (define defmacro-macro
    [defmacro F | Rest] -> (let Default [(protect X) -> (protect X)]
                                Def (eval [define F | (append Rest Default)])
-                               Record (record-macro F (/. X (F X)))
+                               Record (record-macro F (/. X ((fn F) X)))
                              F)
    X -> X)
 
@@ -129,12 +129,17 @@
    X -> X)
 
  (define synonyms-macro
-   [synonyms | X] -> (synonyms-h (append X (value *synonyms*)))
+   [synonyms | X] -> (synonyms-h (set *synonyms* (append X (value *synonyms*))))
    X -> X)
+
+ (define lambda-of-defun
+   [defun _ [Var] Body] -> (eval [/. Var Body]))
 
  (define synonyms-h
    Synonyms -> (let CurryTypes (map (/. X (curry-type X)) Synonyms)
-                    Eval (eval [define demod | (compile-synonyms CurryTypes)])
+                    DemodLambda (lambda-of-defun
+                                 (shendef->kldef demod (compile-synonyms CurryTypes)))
+                    Demod (set *demodulation-function* DemodLambda)
                   synonyms))
 
  (define compile-synonyms
@@ -194,4 +199,6 @@
 
  (define undefmacro
    F -> (do (set *macros* (remove (assoc F (value *macros*)) (value *macros*)))
-            F)))
+            F))
+
+ )

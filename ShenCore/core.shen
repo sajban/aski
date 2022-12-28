@@ -126,7 +126,7 @@
    Name FreeV -> (if (empty? FreeV)
                      skip
                      (do (output "free variables in ~A:" Name)
-                         (map (/. X (output " ~A" X)) FreeV)
+                         (for-each (/. X (output " ~A" X)) FreeV)
                          (nl)
                          (abort))))
 
@@ -204,8 +204,20 @@
                         [Rep | Z]))
    X V Y -> Y)
 
+ (define alpha-convert
+   [lambda X Y] -> (let NewV (gensym (protect Z))
+                        Alpha [lambda NewV (beta X NewV Y)]
+                      (map (/. Z (alpha-convert Z)) Alpha))
+   [let X Y Z]  -> (let NewV (gensym (protect W))
+                        Alpha [let NewV Y (beta X NewV Z)]
+                      (map (/. Z (alpha-convert Z)) Alpha))
+   [X | Y]      -> (map (/. Z (alpha-convert Z)) [X | Y])
+   X -> X)
+
  (define kl-body
-   Rules Parameters -> (map (/. R (triple-stack [] (fst R) Parameters (snd R))) Rules))
+   Rules Parameters -> (map (/. R (triple-stack [] (fst R) Parameters
+                                                (alpha-convert (snd R))))
+                            Rules))
 
  (define triple-stack
    Test [] [] [where P Continue] -> (triple-stack [P | Test] [] [] Continue)
@@ -301,9 +313,12 @@
    Free Code -> (let F (gensym else)
                      Used (remove-if-unused Free Code)
                      KL [defun F Used Code]
-                     EvalKL (eval-kl KL)
+                     EvalKL (eval-factorised-branch KL)
                      Record (record-kl F KL)
                    [F | Used]))
+
+ (define eval-factorised-branch
+   KL -> (eval-kl KL))
 
  (define remove-if-unused
    [] _ -> []
@@ -345,4 +360,6 @@
    +string? -> @s
    +vector? -> @v
    tuple? -> @p
-   _ -> skip))
+   _ -> skip)
+
+ )
