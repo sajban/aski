@@ -69,9 +69,9 @@
    Arg String Mode -> (cn (arg->str Arg Mode) String))
 
  (define arg->str
-   F _ -> "..."                   where  (= F (fail))
+   F _ -> "..."                    where  (= F (fail))
    L Mode -> (list->str L Mode)    where (list? L)
-   S Mode -> (str->str S Mode)            where (string? S)
+   S Mode -> (str->str S Mode)     where (string? S)
    V Mode -> (vector->str V Mode)  where (absvector? V)
    At _ -> (atom->str At))
 

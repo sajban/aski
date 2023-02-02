@@ -99,7 +99,7 @@
    >= -> greater-than-or-equal-to?
    <= -> less-than-or-equal-to?
    + -> add
-     - -> subtract
+   - -> subtract
    / -> divide
    * -> multiply
    F -> F)
