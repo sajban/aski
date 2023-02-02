@@ -112,13 +112,13 @@
     -> (run-loop Ss Program (change-env Var (- (look-up Var Env) 1) Env))
   [[if Test then DoThis else DoThat] | Ss] Program Env
     -> (if (perform-test? Test Env)
-           (run-loop [DoThis | Ss] Program Env)
-           (run-loop [DoThat | Ss] Program Env))
+	   (run-loop [DoThis | Ss] Program Env)
+	   (run-loop [DoThat | Ss] Program Env))
   [[print M] | Ss] Program Env -> (do (output "~A" (look-up M Env))
-                                      (run-loop Ss Program Env))
+				      (run-loop Ss Program Env))
     where (symbol? M)
   [[print M] | Ss] Program Env -> (do (output "~A" M)
-                                      (run-loop Ss Program Env))
+				      (run-loop Ss Program Env))
   [[input Var] | Ss] Program Env
     -> (run-loop Ss Program (change-env Var (input+ number) Env)) )
 
@@ -136,9 +136,9 @@
 (define perform-test?
   {test --> env --> boolean}
   [Test1 and Test2] Env -> (and (perform-test? Test1 Env)
-                                (perform-test? Test2 Env))
+				(perform-test? Test2 Env))
   [Test1 or Test2] Env -> (or (perform-test? Test1 Env)
-                              (perform-test? Test2 Env))
+			      (perform-test? Test2 Env))
   [not Test] Env -> (not (perform-test? Test Env))
   [V1 = V2] Env -> (= (compute-val V1 Env) (compute-val V2 Env))
   [V1 > V2] Env -> (> (compute-val V1 Env) (compute-val V2 Env))

@@ -10,14 +10,14 @@
   Class SuperClasses ClassDef
     -> (let Attributes (map fst ClassDef)
             Inherited (put-prop Class attributes
-                                (append Attributes (collect-attributes SuperClasses)))
+				(append Attributes (collect-attributes SuperClasses)))
             Types (record-attribute-types Class ClassDef)
             Assoc (map (/. Attribute [Attribute | fail!]) Inherited)
             ClassDef [[class | Class] | Assoc]
             Store (put-prop Class classdef ClassDef)
             RecordClass (axiom Class Class [class Class])
             SubTypes (record-subtypes Class SuperClasses)
-          Class))
+	  Class))
 
 (define record-subtypes
   _ [] -> _
@@ -28,7 +28,7 @@
   _ [] -> []
   Class [SuperClass | SuperClasses] -> [_______________________
                                         [subtype SuperClass Class]; |
-                                        (record-subtypes-help Class SuperClasses)])
+					(record-subtypes-help Class SuperClasses)])
 
 (define collect-attributes
   [] -> []
@@ -44,22 +44,22 @@
   _ [] -> []
   Class [(@p Attribute Type) | ClassDef]
     -> (let DataTypeName (concat Class Attribute)
-            DataType (axiom DataTypeName Attribute [attribute Class Type])
-          (record-attribute-types Class ClassDef)))
+	    DataType (axiom DataTypeName Attribute [attribute Class Type])
+	  (record-attribute-types Class ClassDef)))
 
 (declare make-instance [[class Class] --> [instance Class]])
 
 (define make-instance
   Class -> (let ClassDef (get-prop Class classdef [])
-              (if (empty? ClassDef)
-                  (error "class ~A does not exist~%" Class)
-                  ClassDef)))
+	      (if (empty? ClassDef)
+		  (error "class ~A does not exist~%" Class)
+		  ClassDef)))
 
 (declare get-value [[attribute Class A] --> [instance Class] --> A])
 
 (define get-value
   Attribute Instance -> (let LookUp (assoc Attribute Instance)
-                           (get-value-test LookUp)))
+			   (get-value-test LookUp)))
 
 (define get-value-test
   [ ] -> (error "no such attribute!~%")
@@ -70,7 +70,7 @@
 
 (define has-value?
   Attribute Instance -> (let LookUp (assoc Attribute Instance)
-                           (has-value-test LookUp)))
+			   (has-value-test LookUp)))
 
 (define has-value-test
   [ ] -> (error "no such attribute!~%")
@@ -81,7 +81,7 @@
 
 (define has-attribute?
   Attribute Instance -> (let LookUp (assoc Attribute Instance)
-                           (not (empty? LookUp))))
+			   (not (empty? LookUp))))
 
 (declare change-value [[instance Class] --> [attribute Class A] --> A --> [instance Class]])
 

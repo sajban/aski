@@ -43,8 +43,8 @@
   X X Mgu -> Mgu
   [X | Y] [W | Z] Mgu
     -> (unify-terms Y Z (unify-term (dereference X Mgu)
-                                    (dereference W Mgu)
-                                    Mgu))
+				    (dereference W Mgu)
+				    Mgu))
   _ _ _ -> (error "unification failure!"))
 
 (define unify-term
@@ -63,7 +63,7 @@
   {term --> (list (term * term)) --> term}
   [X | Y] Mgu -> [X | (map (/. Z (dereference Z Mgu)) Y)]
   X Mgu -> (let Val (lookup X Mgu)
-              (if (= Val X) X (dereference Val Mgu))))
+	      (if (= Val X) X (dereference Val Mgu))))
 
 (define lookup
   {term --> (list (term * term)) --> term}
@@ -85,13 +85,13 @@
 (define prolog
   {(list atom) --> (list horn-clause)  -->  boolean}
   Goals Program -> (prolog-help (insert-answer-literal Goals)
-                                Program
-                                Program))
+				Program
+				Program))
 
 (define insert-answer-literal
   {(list atom) --> (list atom)}
   Goals -> (append Goals
-                   (answer-literal (mapcan (fn variables-in-atom) Goals))))
+		   (answer-literal (mapcan (fn variables-in-atom) Goals))))
 
 (define answer-literal
   {(list term) --> (list atom)}
@@ -108,14 +108,14 @@
   [[answer | Terms]] _ _ -> (answer Terms)
   [P | Ps] [Clause | Clauses] Program
     -> (let StClause (standardise-apart Clause)
-            H (hdcl StClause)
-            B (body StClause)
-          (or (trap-error
-               (let MGU (unify-atoms P H)
-                    Goals (map (/. X (dereference-atom X MGU))
-                               (append B Ps))
-                  (prolog-help Goals Program Program)) (/. E false))
-              (prolog-help [P | Ps] Clauses Program)))
+	    H (hdcl StClause)
+	    B (body StClause)
+	  (or (trap-error
+	       (let MGU (unify-atoms P H)
+		    Goals (map (/. X (dereference-atom X MGU))
+			       (append B Ps))
+		  (prolog-help Goals Program Program)) (/. E false))
+	      (prolog-help [P | Ps] Clauses Program)))
   _ _ _ -> false)
 
 (define hdcl
@@ -157,12 +157,12 @@
   {(list term) --> horn-clause --> horn-clause}
   [] Clause -> Clause
   [V | Vs] Clause -> (st-all (remove V Vs)
-                             (replace-term-in-clause V (gensym (protect X)) Clause)))
+			     (replace-term-in-clause V (gensym (protect X)) Clause)))
 
 (define replace-term-in-clause
   {term --> term --> horn-clause --> horn-clause}
   V NewV [H <= | B] -> [(replace-term-in-atom V NewV H) <=
-                        | (map (/. A (replace-term-in-atom V NewV A)) B)])
+			| (map (/. A (replace-term-in-atom V NewV A)) B)])
 
 (define replace-term-in-atom
   {term --> term --> atom --> atom}

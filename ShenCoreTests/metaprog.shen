@@ -48,7 +48,7 @@
 
 (define generate_code_for_nonlex
   Rules -> (eval (append [define (get_characteristic_non_terminal Rules)
-                           | (mapapp (fn gcfn_help) Rules)]
+			   | (mapapp (fn gcfn_help) Rules)]
                          [(protect X) -> [fail]])))
 
 (define mapapp
@@ -60,11 +60,11 @@
 
 (define gcfn_help
   Rule -> [(protect Parameter)
-           <-
-           (apply_expansion Rule
-                            [listit [head (protect Parameter)]
-                                    [cons [listit | Rule]
-                                          [head [tail (protect Parameter)]]]])])
+	   <-
+	   (apply_expansion Rule
+			    [listit [head (protect Parameter)]
+				    [cons [listit | Rule]
+					  [head [tail (protect Parameter)]]]])])
 
 (define apply_expansion
   [CNT --> | Expansion] Parameter -> (ae_help Expansion Parameter))
@@ -75,10 +75,10 @@
 
 (define generate_code_for_lex
   Rules -> (eval (append [define (get_characteristic_non_terminal Rules)
-                           (protect X) -> [fail]  where [= (protect X) [fail]]
-                           | (mapapp (fn gcfl_help) Rules)]
-                         [(protect X) -> [fail]])))
+			   (protect X) -> [fail]  where [= (protect X) [fail]]
+			   | (mapapp (fn gcfl_help) Rules)]
+			 [(protect X) -> [fail]])))
 
 (define gcfl_help
   [CNT --> Terminal] -> [[cons [cons Terminal (protect P)] [cons (protect Parse) []]]
-                         -> [listit (protect P) [cons [listit CNT --> Terminal] (protect Parse)]]])
+			 -> [listit (protect P) [cons [listit CNT --> Terminal] (protect Parse)]]])

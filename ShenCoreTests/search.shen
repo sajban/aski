@@ -6,9 +6,9 @@
   {(state --> (list state)) --> (state --> boolean) --> (list state) --> boolean}
   F Test States -> true       where (some Test States)
   F Test States -> (let NewStates (mapcan F States)
-                      (if (empty? NewStates)
-                          false
-                          (b* F Test NewStates))))
+		      (if (empty? NewStates)
+			  false
+			  (b* F Test NewStates))))
 
 (define some
   {(A --> boolean) --> (list A) --> boolean}

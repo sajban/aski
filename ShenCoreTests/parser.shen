@@ -1,8 +1,8 @@
 (define parse
   Sentence -> (let Parse (sent [Sentence []])
-                 (if (parsed? Parse)
-                     (output_parse Parse)
-                     ungrammatical)))
+		 (if (parsed? Parse)
+		     (output_parse Parse)
+		     ungrammatical)))
 
 (define parsed?
   [[] _] -> true

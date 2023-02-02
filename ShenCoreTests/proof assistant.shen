@@ -13,18 +13,18 @@
 (define proof-assistant
   {A --> symbol}
   _ -> (let Assumptions (input-assumptions 1)
-            Conclusion (input-conclusion _)
-            Sequents [(@p Assumptions Conclusion)]
-            Proof (time (proof-loop Sequents []))
-          (do (nl) proved)))
+	    Conclusion (input-conclusion _)
+	    Sequents [(@p Assumptions Conclusion)]
+	    Proof (time (proof-loop Sequents []))
+	  (do (nl) proved)))
 
 (define input-assumptions
   {number --> (list wff)}
   N -> (let More? (y-or-n? "~%Input assumptions? ")
-          (if More?
-              (do (output "~%~A. " N)
-                  [(input+ wff) | (input-assumptions (+ N 1))])
-              [ ])))
+	  (if More?
+	      (do (output "~%~A. " N)
+		  [(input+ wff) | (input-assumptions (+ N 1))])
+	      [ ])))
 
 (define input-conclusion
   {A --> wff}
@@ -34,11 +34,11 @@
   {(list sequent) --> proof --> proof}
   [ ] Proof -> (set *proof* (reverse Proof))
   S Proof -> (let Show (show-sequent S (+ 1 (length Proof)))
-                  D (user-directive _)
-                  Step (@p S D)
-                (if (= D (fn back))
-                    (proof-loop (go-back Proof) (tail Proof))
-                    (proof-loop (D S) [Step | Proof]))))
+		  D (user-directive _)
+		  Step (@p S D)
+		(if (= D (fn back))
+		    (proof-loop (go-back Proof) (tail Proof))
+		    (proof-loop (D S) [Step | Proof]))))
 
 (define show-proof
   {string --> symbol}
@@ -48,20 +48,20 @@
   {proof --> number --> symbol}
   [ ] _ -> proved
   [(@p Sequents Tactic) | Proof] N -> (do (show-sequent Sequents N)
-                                          (output "~%Tactic: ~A~%" Tactic)
-                                          (show-proof-help Proof (+ N 1))))
+					  (output "~%Tactic: ~A~%" Tactic)
+					  (show-proof-help Proof (+ N 1))))
 
 (define show-sequent
   {(list sequent) --> number --> symbol}
   Sequents N -> (let Unsolved (length Sequents)
-                     Sequent (head Sequents)
-                     Wffs (fst Sequent)
-                     Wff (snd Sequent)
-                   (do (output "==============================~%")
-                       (output "Step ~A            unsolved ~A~%~%"
-                               N Unsolved)
-                       (output "?- ~S~%~%" Wff)
-                       (enumerate Wffs 1))))
+		     Sequent (head Sequents)
+		     Wffs (fst Sequent)
+		     Wff (snd Sequent)
+		   (do (output "==============================~%")
+		       (output "Step ~A            unsolved ~A~%~%"
+			       N Unsolved)
+		       (output "?- ~S~%~%" Wff)
+		       (enumerate Wffs 1))))
 
 (define enumerate
   {(list A) --> number --> symbol}

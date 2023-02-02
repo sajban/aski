@@ -455,8 +455,8 @@
 (define alpha*?
   {string --> boolean}
   S -> (let N (string->n S)
-          (or (and (> N 96) (< N 123))
-              (and (> N 64) (< N 91)))))
+	  (or (and (> N 96) (< N 123))
+	      (and (> N 64) (< N 91)))))
 
 (defcc <numeric>
   {(list string) ==> string}

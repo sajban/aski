@@ -95,45 +95,45 @@
 (define ==>>
   {l-formula --> l-formula}
   [= X Y] -> (let X* (normal-form X)
-                (let Y* (normal-form Y)
-                   (if (or (eval-error? X*) (eval-error? Y*))
-                       "error!"
-                       (if (= X* Y*) true false))))
+		(let Y* (normal-form Y)
+		   (if (or (eval-error? X*) (eval-error? Y*))
+		       "error!"
+		       (if (= X* Y*) true false))))
   [[/. P X] Y] -> (let Match (match P (normal-form Y))
-                     (if (no-match? Match)
-                         "no match"
-                         (sub Match X)))
+		     (if (no-match? Match)
+			 "no match"
+			 (sub Match X)))
   [if X Y Z] -> (let X* (normal-form X)
-                   (if (= X* true)
-                       Y
-                       (if (= X* false)
-                           Z
-                           "error!")))
+		   (if (= X* true)
+		       Y
+		       (if (= X* false)
+			   Z
+			   "error!")))
   [let X Y Z] -> [[/. X Z] Y]
   [@p X Y] -> (let X* (normal-form X)
-                 (let Y* (normal-form Y)
-                    (if (or (eval-error? X*) (eval-error? Y*))
-                        "error!"
-                        [@p X* Y*])))
+		 (let Y* (normal-form Y)
+		    (if (or (eval-error? X*) (eval-error? Y*))
+			"error!"
+			[@p X* Y*])))
   [cons X Y] -> (let X* (normal-form X)
-                   (let Y* (normal-form Y)
-                      (if (or (eval-error? X*) (eval-error? Y*))
-                          "error!"
-                          [cons X* Y*])))
+		   (let Y* (normal-form Y)
+		      (if (or (eval-error? X*) (eval-error? Y*))
+			  "error!"
+			  [cons X* Y*])))
   [++ X] -> (successor (normal-form X))
   [-- X] -> (predecessor (normal-form X))
   [cases X1 | Xn] -> (let Case1 (normal-form X1)
-                        (if (= Case1 "no match")
-                            [cases | Xn]
-                            Case1))
+			(if (= Case1 "no match")
+			    [cases | Xn]
+			    Case1))
   [cases] -> "error!"
   [where X Y] -> [if X Y "no match"]
   [y-combinator [/. X Y]] -> (replace X [y-combinator [/. X Y]] Y)
   [X Y] -> (let X* (normal-form X)
-              (let Y* (normal-form Y)
-                 (if (or (eval-error? X*) (eval-error? Y*))
-                     "error!"
-                     [X* Y*])))
+	      (let Y* (normal-form Y)
+		 (if (or (eval-error? X*) (eval-error? Y*))
+		     "error!"
+		     [X* Y*])))
   X -> X)
 
 (define eval-error?
@@ -162,19 +162,19 @@
   P X -> [] where (== P X)
   P X -> [(@p P X)]      where (variable? P)
   [cons P1 P2] [cons X Y] -> (let Match1 (match P1 X)
-                                (if (no-match? Match1)
-                                    Match1
-                                    (let Match2 (match P2 Y)
-                                       (if (no-match? Match2)
-                                           Match2
-                                           (append Match1 Match2)))))
+				(if (no-match? Match1)
+				    Match1
+				    (let Match2 (match P2 Y)
+				       (if (no-match? Match2)
+					   Match2
+					   (append Match1 Match2)))))
   [@p P1 P2] [@p X Y] -> (let Match1 (match P1 X)
-                            (if (no-match? Match1)
-                                Match1
-                                (let Match2 (match P2 Y)
-                                   (if (no-match? Match2)
-                                       Match2
-                                       (append Match1 Match2)))))
+			    (if (no-match? Match1)
+				Match1
+				(let Match2 (match P2 Y)
+				   (if (no-match? Match2)
+				       Match2
+				       (append Match1 Match2)))))
 
   _ _ -> [(@p no matching)])
 

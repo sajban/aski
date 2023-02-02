@@ -95,7 +95,7 @@
       "flake": false,
       "locked": {
         "lastModified": 1,
-        "narHash": "sha256-NNMP9dh4BTdPx4W8mnhTCDvCoVYUXnhDFFUHDYU/z1M=",
+        "narHash": "sha256-kmRFMOR0djdDhjf53LlabWaQyE0XTYGktB7uewUszS0=",
         "path": "./ShenCore",
         "type": "path"
       },
@@ -121,7 +121,7 @@
       "flake": false,
       "locked": {
         "lastModified": 1,
-        "narHash": "sha256-EbT8PfeWjkLIutpLuDQyLO9FiQyqP5i0BsvCo06zl7I=",
+        "narHash": "sha256-CYpQTGYgo1mb51GGGxqjxiYqSYZa8aR0n6TCAsq7O5M=",
         "path": "./ShenCoreTests",
         "type": "path"
       },

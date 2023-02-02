@@ -8,6 +8,6 @@
   [State | _] _ _ Fail? _ -> []                                 where (Fail? State)
   [State | _] Successors Goal? Fail? Path <- (fail-if (fn empty?)
                                                       (depth-help (Successors State)
-                                                                  Successors Goal? Fail? [State | Path]))
+								  Successors Goal? Fail? [State | Path]))
   [_ | States] Successors Goal? Fail? Path -> (depth-help States Successors Goal? Fail? Path)
   _ _ _ _ _ -> [])

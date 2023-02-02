@@ -7,8 +7,8 @@
 (define delay
   {(progression A) --> (progression A)}
   (@p X F E) -> (if (not (E X))
-                    (@p (F X) F E)
-                    (error "progression exhausted!~%")))
+		    (@p (F X) F E)
+		    (error "progression exhausted!~%")))
 
 (define force
   {(progression A) --> A}
