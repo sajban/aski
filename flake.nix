@@ -118,7 +118,7 @@
         };
 
       mkMkAskiNext = { deryveicyn, sbcl }:
-        { src, version, askiFleik ? (AskiCoreFleik + /fleik.aski) }:
+        { src, version, askiFleik ? (AskiCoreFleik + /fleik.shen) }:
         deryveicyn {
           name = "aski";
           inherit src version askiFleik;
