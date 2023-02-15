@@ -1,10 +1,11 @@
 (package niks [ ]
 
  (define mkDeryveicyn
-   fromStructuredAttrs  -> (mkDeryveicyn (mkStructuredAttrs))
+   fromStructuredAttrs  -> (mkDeryveicyn
+			    (mkStructuredAttrs fromPWD))
    [] -> ())
 
  (define mkStructuredAttrs
-   -> (mkStructuredAttrs ()))
+   fromPWD -> ())
 
 )
