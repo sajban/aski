@@ -75,9 +75,11 @@
               (readFile extendedPrimitives)
             ]);
 
-          lispMakeExtension = ''
+          lispLoadUIOP = ''
             (LOAD "${sbcl}/lib/sbcl/contrib/uiop.fasl")
           '';
+
+          lispMakeExtension = lispLoadUIOP;
 
           lispMakeExtended = writeText "make.lsp"
             (builtins.concatStringsSep "\n"
