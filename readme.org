@@ -6,5 +6,5 @@ It can be thought of as the precursor to sajban.
 ** Building
 To get a working aski executable:
 #+begin_src sh
-  nix build github:sajban/uniks#aski.bootstrap
+  nix build github:sajban/kriomOS#aski.bootstrap
 #+end_src
